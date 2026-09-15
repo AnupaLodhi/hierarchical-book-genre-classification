@@ -1,0 +1,75 @@
+# ==============================
+# Python
+# ==============================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ==============================
+# Secrets / API Keys
+# ==============================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ==============================
+# macOS
+# ==============================
+.DS_Store
+
+# ==============================
+# IDE / Editor
+# ==============================
+.vscode/
+.idea/
+
+# ==============================
+# Logs / Temporary Files
+# ==============================
+*.log
+*.tmp
+*.temp
+
+# ==============================
+# Python Testing / Cache
+# ==============================
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ==============================
+# Generated Research Outputs
+# ==============================
+outputs/*.csv
+outputs/*.json
+
+# Keep outputs directory
+!outputs/.gitkeep
+
+# ==============================
+# Raw scraped research data
+# ==============================
+# Kept local; regenerate using scraper scripts.
+data/openlibrary_metadata.json
+data/goodreads_metadata.json
+data/amazon_metadata.json
+
+# Scraping diagnostics
+data/openlibrary_failures.json
+data/goodreads_failures.json
+data/amazon_failures.json
+
+# Full provenance dataset contains scraped text evidence
+data/master_data.json
+
+# Agent-ready dataset currently contains scraped blurbs/reviews
+data/clean_master_data.csv
