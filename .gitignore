@@ -73,3 +73,6 @@ data/master_data.json
 
 # Agent-ready dataset currently contains scraped blurbs/reviews
 data/clean_master_data.csv
+
+# Local reference repository
+reference_tmp/
