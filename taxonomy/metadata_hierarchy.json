@@ -24,7 +24,8 @@
           "New Adult Audience"
         ],
         "Adult": [
-          "General Adult Audience"
+          "General Adult Audience",
+          "Women"
         ],
         "All_Ages": [
           "Family Audience",
@@ -48,6 +49,7 @@
       },
       "Educational_Stage": {
         "School_Level": [
+          "Pre-School",
           "Primary School",
           "Middle School",
           "Secondary School"
@@ -62,7 +64,7 @@
         ]
       }
     },
-    "Geographical_Context": {
+    "Geographical Context": {
       "World_Region": {
         "Africa": [
           "North Africa",
@@ -76,19 +78,24 @@
           "East Asia",
           "Southeast Asia",
           "Central Asia",
-          "West Asia"
+          "West Asia",
+          "Indo-Pacific"
         ],
         "Europe": [
           "Western Europe",
           "Eastern Europe",
           "Northern Europe",
           "Southern Europe",
-          "Central Europe"
+          "Central Europe",
+          "Mediterranean Europe"
         ],
         "North_America": [
           "United States",
           "Canada",
           "Mexico"
+        ],
+        "Central America": [
+          "Missoure"
         ],
         "South_America": [
           "Andean Region",
@@ -103,7 +110,8 @@
         "Middle_East": [
           "Arabian Peninsula",
           "Levant",
-          "Persia/Iran Region"
+          "Persia",
+          "Iran Region"
         ],
         "Global_or_Transnational": [
           "Global",
@@ -231,7 +239,10 @@
         ],
         "Digital": [
           "Ebook",
-          "Interactive Ebook"
+          " Kindle",
+          "EPUb",
+          "pdf",
+          "djvu"
         ],
         "Audio": [
           "Audiobook",
@@ -297,40 +308,21 @@
       }
     },
     "Temporal_Context": {
-      "Historical_Period": {
-        "Ancient": [
-          "Prehistoric",
-          "Ancient",
-          "Classical"
-        ],
-        "Medieval": [
-          "Early Medieval",
-          "High Medieval",
-          "Late Medieval"
-        ],
-        "Early_Modern": [
-          "Renaissance",
-          "Early Colonial",
-          "Enlightenment"
-        ],
-        "Modern": [
-          "Nineteenth Century",
-          "Early Twentieth Century",
-          "Mid Twentieth Century",
-          "Late Twentieth Century"
-        ],
-        "Contemporary": [
-          "Twenty First Century",
-          "Present Day"
-        ],
-        "Future": [
-          "Near Future",
-          "Far Future"
-        ]
-      },
       "Publication_Period": {
+        "Fifteenth Century Publication": [
+          "1400  1499"
+        ],
+        "Sixteenth Century Publication": [
+          "1500  1599"
+        ],
         "Classical_Publication": [
           "Pre-1800"
+        ],
+        "Seventeenth Century Publication": [
+          "1600  1699"
+        ],
+        "Eighteenth Century Publication": [
+          "1700  1899"
         ],
         "Nineteenth_Century_Publication": [
           "1800-1899"
@@ -340,6 +332,74 @@
         ],
         "Contemporary_Publication": [
           "2000-Present"
+        ]
+      },
+      "Global_Time_Frame": {
+        "Prehistory": [
+          "Prehistoric"
+        ],
+        "Antiquity": [
+          "Pre-5th Century"
+        ],
+        "First_Millennium_CE": [
+          "5th Century",
+          "6th Century",
+          "7th Century",
+          "8th Century",
+          "9th Century",
+          "10th Century"
+        ],
+        "Second_Millennium_CE": {
+          "Early_Second_Millennium": [
+            "11th Century",
+            "12th Century",
+            "13th Century",
+            "14th Century",
+            "15th Century"
+          ],
+          "Late_Second_Millennium": [
+            "16th Century",
+            "17th Century",
+            "18th Century",
+            "19th Century",
+            "20th Century"
+          ]
+        },
+        "Third_Millennium_CE": [
+          "21st Century",
+          "Present Day"
+        ],
+        "Future": [
+          "Near Future",
+          "Far Future"
+        ]
+      },
+      "Regional_Historical_Eras": {
+        "Indian_History": [
+          "Vedic Period",
+          "Maurya Era",
+          "Gupta Era",
+          "Delhi Sultanate",
+          "Mughal Era",
+          "British Raj"
+        ],
+        "European_and_British_History": [
+          "Classical Period",
+          "Anglo-Saxon Era",
+          "Norman Period",
+          "Tudor Period",
+          "Elizabethan Era",
+          "Victorian Era",
+          "Edwardian Era"
+        ],
+        "East_Asian_History": [
+          "Han Dynasty",
+          "Tang Dynasty",
+          "Song Dynasty",
+          "Ming Dynasty",
+          "Qing Dynasty",
+          "Edo Period",
+          "Meiji Era"
         ]
       }
     },
@@ -355,7 +415,7 @@
           "Community Bonding"
         ],
         "Love_and_Intimacy": [
-          "Love",
+          "Love & Romance",
           "Marriage",
           "Courtship"
         ],
@@ -363,7 +423,12 @@
           "Class",
           "Migration",
           "Displacement",
-          "Social Justice"
+          "Social Justice",
+          "Social Movements",
+          "Protest",
+          "Corruption",
+          "Atrocities",
+          "Discrimination"
         ]
       },
       "Conflict_and_Event_Themes": {
@@ -458,7 +523,8 @@
         "Cultural_Representation": [
           "Indigenous Representation",
           "Diaspora Representation",
-          "Minority Community Representation"
+          "Minority Community Representation",
+          "Caste Representation"
         ],
         "Disability_Representation": [
           "Physical Disability Representation",
@@ -492,7 +558,8 @@
         "Nonlinear": [
           "Flashback-Based",
           "Fragmented",
-          "Circular"
+          "Circular",
+          "Open-Ended"
         ],
         "Frame_Narrative": [
           "Story Within Story"
@@ -566,7 +633,9 @@
           "Self-Harm Theme",
           "Addiction Theme",
           "Grief",
-          "War Trauma"
+          "War Trauma",
+          "Prejudice",
+          "Propaganda"
         ],
         "Accessibility": [
           "Large Print",
@@ -585,9 +654,12 @@
           "Middle Book in Series",
           "Final Book in Series",
           "Companion Book",
-          "Spin-Off"
+          "Spin-Off",
+          "Prequel",
+          "Sequel"
         ]
       },
+      "Adaptation": {},
       "Authorship_Metadata": {
         "Single_Author": [
           "Single Author"
@@ -608,7 +680,8 @@
           "Revised Edition",
           "Expanded Edition",
           "Annotated Edition",
-          "Critical Edition"
+          "Critical Edition",
+          "Facsimile Edition"
         ]
       }
     }

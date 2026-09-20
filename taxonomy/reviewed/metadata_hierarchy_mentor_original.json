@@ -1,0 +1,741 @@
+{
+  "Book_Metadata_Hierarchy": {
+    "Audience": {
+      "Age_Group": {
+        "Early_Childhood": [
+          "Board Book Audience",
+          "Preschool Audience"
+        ],
+        "Child": [
+          "Early Reader Audience",
+          "Independent Child Reader Audience"
+        ],
+        "Middle_Grade": [
+          "Lower Middle Grade Audience",
+          "Upper Middle Grade Audience"
+        ],
+        "Teen": [
+          "Teen Audience"
+        ],
+        "Young_Adult": [
+          "Young Adult Audience"
+        ],
+        "New_Adult": [
+          "New Adult Audience"
+        ],
+        "Adult": [
+          "General Adult Audience",
+	        "�Women�" /// Different from previous version 
+        ],
+        "All_Ages": [
+          "Family Audience",
+          "Cross-Age Audience"
+        ]
+      },
+      "Reading_Level": {
+        "Beginner": [
+          "Pre-Literacy",
+          "Emergent Reader",
+          "Beginner Reader"
+        ],
+        "Intermediate": [
+          "Developing Reader",
+          "Independent Reader"
+        ],
+        "Advanced": [
+          "Advanced Reader",
+          "Scholarly Reader"
+        ]
+      },
+      "Educational_Stage": {
+        "School_Level": [
+          "�Pre-School�", /// Different from previous version 
+		      "Primary School",
+          "Middle School",
+          "Secondary School"
+        ],
+        "College_Level": [
+          "Undergraduate",
+          "Postgraduate"
+        ],
+        "Professional_Level": [
+          "Professional Training",
+          "Continuing Education"
+        ]
+      }
+    },
+    "Geographical Context[RM1]": {
+      "World_Region": {
+        "Africa": [
+          "North Africa",
+          "West Africa",
+          "East Africa",
+          "Central Africa",
+          "Southern Africa"
+        ],
+        "Asia": [
+          "South Asia",
+          "East Asia",
+          "Southeast Asia",
+          "Central Asia",
+          "West Asia",
+	        "�Indo-Pacific�". /// Different from previous version 
+        ],
+        "Europe": [
+          "Western Europe",
+          "Eastern Europe",
+          "Northern Europe",
+          "Southern Europe",
+          "Central Europe",
+          "�Mediterranean Europe�" /// Different from previous version 
+        ],
+        "North_America": [
+          "United States",
+          "Canada",
+          "Mexico"
+        ],
+	     "�Central America�": [   /// Different from previous version 
+           "Missoure",   
+           ""
+        ],
+
+        "South_America": [
+          "Andean Region",
+          "Southern Cone",
+          "Amazon Region"
+        ],
+        "Oceania": [
+          "Australia",
+          "New Zealand",
+          "Pacific Islands"
+        ],
+        "Middle_East": [
+          "Arabian Peninsula",
+          "Levant",
+          "Persia",
+          "Iran Region"
+        ],
+        "Global_or_Transnational": [
+          "Global",
+          "Diasporic",
+          "Cross-Border"
+        ]
+      },
+      "Country[RM2]_or_National_Context": {
+        "Country_Based_Context": [
+          "Indian Context",
+          "American Context",
+          "British Context",
+          "French Context",
+          "German Context",
+          "Japanese Context",
+          "Chinese Context",
+          "Russian Context",
+          "Canadian Context",
+          "Australian Context"
+        ]
+      },
+      "Place_Type": {
+        "Urban": [
+          "Metropolitan",
+          "Small City",
+          "Town"
+        ],
+        "Rural": [
+          "Village",
+          "Countryside",
+          "Remote Settlement"
+        ],
+        "Natural": [
+          "Forest",
+          "Desert",
+          "Mountain",
+          "Island",
+          "Oceanic",
+          "Polar"[RM3]
+        ],
+        "Institutional": [
+          "School",
+          "University",
+          "Workplace",
+          "Hospital",
+          "Court",
+          "Prison"
+        ],
+        "Domestic": [
+          "Home",
+          "Family Household"
+        ],
+        "Travel_Related": [
+          "Journey",
+          "Road",
+          "Sea Route",
+          "Pilgrimage Route"
+        ]
+      }
+    },
+    "Language_and_Textual_Context": {
+      "Language": {
+        "Single_Language": [
+          "English",
+          "Hindi",
+          "Bengali",
+          "Tamil",
+          "Telugu",
+          "Malayalam",
+          "Marathi",
+          "Urdu",
+          "French",
+          "German",
+          "Spanish",
+          "Arabic",
+          "Chinese",
+          "Japanese",
+          "Russian"
+        ],
+        "Multilingual": [
+          "Bilingual",
+          "Multilingual",
+          "Code-Mixed"
+        ]
+      },
+      "Translation_Status": {
+        "Original": [
+          "Original Language Text"
+        ],
+        "Translated": [
+          "Translated Text"
+        ],
+        "Adapted": [
+          "Adapted Translation",
+          "Retelling Translation"
+        ]
+      },
+      "Script": {
+        "Indic_Scripts": [
+          "Devanagari",
+          "Bengali-Assamese",
+          "Tamil",
+          "Telugu",
+          "Malayalam",
+          "Kannada",
+          "Gujarati",
+          "Gurmukhi",
+          "Odia"
+        ],
+        "Global_Scripts": [
+          "Latin",
+          "Arabic",
+          "Cyrillic",
+          "Chinese Characters",
+          "Japanese Kana/Kanji"
+        ]
+      }
+    },
+    "Book_Format_and_Form": {
+      "Physical_or_Digital_Format": {
+        "Print": [
+          "Hardcover",
+          "Paperback",
+          "Mass Market Paperback"
+        ],
+        "Digital": [
+          "Ebook",
+          "� Kindle�",     /// Different from previous version 
+          "�EPUb�",
+          "�pdf�",
+          "�djvu�",
+          "Interactive Ebook[RM4]"
+        ],
+        "Audio": [
+          "Audiobook",
+          "Dramatized Audiobook"
+        ]
+      },
+      "Textual_Form": {
+        "Long_Form": [
+          "Novel-Length Work",
+          "Full-Length Nonfiction Work"
+        ],
+        "Short_Form": [
+          "Short Story",
+          "Short Prose",
+          "Flash Text"
+        ],
+        "Collection": [
+          "Anthology",
+          "Edited Collection",
+          "Collected Works"
+        ],
+        "Serial_Form": [
+          "Series",
+          "Volume",
+          "Installment"
+        ],
+        "Reference_Form": [
+          "Manual",
+          "Handbook",
+          "Guidebook",
+          "Dictionary",
+          "Encyclopedia"
+        ],
+        "Visual_Text_Form": [
+          "Illustrated Book",
+          "Graphic Format",
+          "Photo Book"
+        ],
+        "Personal_Document_Form": [
+          "Diary",
+          "Journal",
+          "Letters",
+          "Correspondence"
+        ]
+      },
+      "Narrative_Length": {
+        "Very_Short": [
+          "Flash-Length"
+        ],
+        "Short": [
+          "Short-Length"
+        ],
+        "Medium": [
+          "Novella-Length"
+        ],
+        "Long": [
+          "Novel-Length"
+        ],
+        "Very_Long": [
+          "Epic-Length",
+          "Multi-Volume"
+        ]
+      }
+    },
+    "Temporal_Context": {
+      "Historical_Period": {
+        "Ancient": [
+          "Prehistoric",
+          "Ancient",
+          "Classical"
+        ],
+        "Medieval[RM5]": [
+          "Early Medieval",
+          "High Medieval",
+          "Late Medieval"
+        ],
+        "Early_Modern": [
+          "Renaissance",
+          "Early Colonial",
+          "Enlightenment"
+        ],
+        "Modern": [
+          "Nineteenth Century",
+          "Early Twentieth Century",
+          "Mid Twentieth Century",
+          "Late Twentieth Century"
+        ],
+        "Contemporary": [
+          "Twenty First Century",
+          "Present Day"
+        ],
+        "Future": [
+          "Near Future",
+          "Far Future"
+        ]
+      },
+      "Publication_Period": {
+        "Fifteenth Century Publication": [
+          "1400 � 1499"
+        ],
+        
+        "�Sixteenth Century Publication�": [
+          "�1500 � 1599�" /// Different from previous version 
+        ],
+        
+        "Classical_Publication": [
+          "Pre-1800"
+        ],
+         "�Seventeenth Century Publication�": [ /// Different from previous version 
+          "�1600 � 1699�"
+	      ],
+        "�Eighteenth Century Publication�":[ /// Different from previous version 
+            "1700 � 1899�"
+        ],
+
+        "Nineteenth_Century_Publication": [
+          "1800-1899"
+        ],
+        "Twentieth_Century_Publication": [
+          "1900-1999"
+        ],
+        "Contemporary_Publication": [
+          "2000-Present"
+        ]
+      }
+    },
+    "Thematic_Metadata": {
+      "Relationship_and_Social_Themes": {
+        "Family": [
+          "Parent-Child Relationship",
+          "Sibling Relationship",
+          "Intergenerational Relationship"
+        ],
+        "Friendship": [
+          "Friendship",
+          "Community Bonding"
+        ],
+        "Love_and_Intimacy": [
+          "Love & Romance",
+          "Marriage",
+          "Courtship"
+        ],
+        "Social_Issues": [
+          "Class",
+          "Migration",
+          "Displacement",
+          "Social Justice",
+          "�Social Movements�",
+          "�Protest�",
+          "�Corruption�",      /// Different from previous version 
+          "�Atrocities�",     
+          "�Discrimination�"
+        ]
+      },
+      "Conflict_and_Event_Themes": {
+        "War_and_Conflict": [
+          "War",
+          "Civil Conflict",
+          "Revolution",
+          "Political Unrest"
+        ],
+        "Crime_and_Justice": [
+          "Crime",
+          "Justice",
+          "Investigation",
+          "Trial"
+        ],
+        "Survival_and_Risk": [
+          "Survival",
+          "Disaster",
+          "Quest",
+          "Escape"
+        ]
+      },
+      "Knowledge_and_Idea_Themes": {
+        "Science_and_Technology": [
+          "Scientific Discovery",
+          "Technological Change",
+          "Artificial Intelligence Theme"
+        ],
+        "Faith_and_Belief": [
+          "Faith",
+          "Spiritual Search",
+          "Religious Practice"
+        ],
+        "Ethics_and_Philosophy": [
+          "Moral Choice",
+          "Identity",
+          "Meaning of Life"
+        ]
+      },
+      "Nature_and_Environment_Themes": {
+        "Environment": [
+          "Climate",
+          "Conservation",
+          "Ecology"
+        ],
+        "Animals": [
+          "Human-Animal Bond",
+          "Wildlife",
+          "Pet Relationship"
+        ]
+      }
+    },
+    "Character_and_Representation_Metadata": {
+      "Protagonist_Profile": {
+        "Age_Profile": [
+          "Child Protagonist",
+          "Teen Protagonist",
+          "Adult Protagonist",
+          "Elderly Protagonist"
+        ],
+        "Role[RM6][RM7]_Profile": [
+          "Student",
+          "Teacher",
+          "Detective",
+          "Scientist",
+          "Artist",
+          "Doctor",
+          "Lawyer",
+          "Soldier",
+          "Entrepreneur"
+        ],
+        "Group[RM8]_Profile": [
+          "Individual-Centered",
+          "Family-Centered",
+          "Community-Centered",
+          "Ensemble Cast"
+        ]
+      },
+      "Identity_Representation": {
+        "Gender_Representation": [
+          "Women-Centered",
+          "Men-Centered",
+          "Nonbinary Representation"
+        ],
+        "LGBTQ_Representation": [
+          "Gay Representation",
+          "Lesbian Representation",
+          "Bisexual Representation",
+          "Transgender Representation",
+          "Queer Representation"
+        ],
+        "Cultural_Representation": [
+          "Indigenous Representation",
+          "Diaspora Representation",
+          "Minority Community Representation", /// Different from previous version 
+          "�Caste Representation�"
+        ],
+        "Disability_Representation": [
+          "Physical Disability Representation",
+          "Neurodiversity Representation",
+          "Mental Health Representation"
+        ]
+      }
+    },
+    "Narrative_and_Stylistic_Metadata": {
+      "Narrative_Perspective": {
+        "First_Person": [
+          "First Person Singular",
+          "First Person Plural"
+        ],
+        "Second_Person": [
+          "Second Person"
+        ],
+        "Third_Person": [
+          "Third Person Limited",
+          "Third Person Omniscient"
+        ],
+        "Multiple_Perspective": [
+          "Multiple POV",
+          "Alternating Narrators"
+        ]
+      },
+      "Narrative_Structure": {
+        "Linear": [
+          "Chronological"
+        ],
+        "Nonlinear": [
+          "Flashback-Based",
+          "Fragmented",
+          "Circular",
+          "�Open-Ended�"
+        ],
+        "Frame_Narrative": [
+          "Story Within Story"
+        ],
+        "Epistolary": [
+          "Letters-Based",
+          "Diary-Based",
+          "Document-Based"
+        ]
+      },
+      "Tone": {
+        "Serious": [
+          "Serious",
+          "Reflective",
+          "Melancholic"
+        ],
+        "Light": [
+          "Lighthearted",
+          "Warm",
+          "Playful"
+        ],
+        "Dark": [
+          "Dark",
+          "Bleak",
+          "Disturbing"
+        ],
+        "Comic": [
+          "Humorous",
+          "Satirical",
+          "Ironic"
+        ],
+        "Inspirational": [
+          "Hopeful",
+          "Motivational",
+          "Uplifting"
+        ]
+      },
+      "Pace": {
+        "Slow": [
+          "Slow-Burn"
+        ],
+        "Moderate": [
+          "Balanced Pace"
+        ],
+        "Fast": [
+          "Fast-Paced",
+          "High-Tension"
+        ]
+      }
+    },
+    "Content_Suitability_Metadata": {
+      "Content_Intensity": {
+        "Low_Intensity": [
+          "Mild Content"
+        ],
+        "Moderate_Intensity": [
+          "Moderate Violence",
+          "Moderate Language",
+          "Moderate Emotional Intensity"
+        ],
+        "High_Intensity": [
+          "Graphic Violence",
+          "Strong Language",
+          "Explicit Sexual Content",
+          "Severe Psychological Distress"
+        ]
+      },
+      "Reader_Advisory": {
+        "Sensitive_Content": [
+          "Abuse",
+          "Self-Harm Theme",
+          "Addiction Theme",
+          "Grief",
+          "War Trauma",
+          "�Prejudice�",
+          "�Propaganda�"  /// Different from previous version 
+        ],
+        "Accessibility": [
+          "Large Print",
+          "Dyslexia-Friendly",
+          "Simplified Language"
+        ]
+      }
+    },
+    "Series_and_Publication_Metadata": {
+      "Series_Status": {
+        "Standalone": [
+          "Standalone Book"
+        ],
+        "Series": [
+          "First Book in Series",
+          "Middle Book in Series",
+          "Final Book in Series",
+          "Companion Book",
+          "Spin-Off",
+          "�Prequel�",/// Different from previous version 
+          "�Sequel�" 
+        ]
+      },
+      "�Adaptation�" :{}, /// Different from previous version 
+      "Authorship_Metadata": {
+        "Single_Author": [
+          "Single Author"
+        ],
+        "Multiple_Authors": [
+          "Co-Authored",
+          "Edited Volume",
+          "Contributor Collection"
+        ],
+        "Pseudonymous_or_Anonymous": [
+          "Pseudonymous",
+          "Anonymous"
+        ]
+      },
+      "Edition_Metadata": {
+        "Edition_Type": [
+          "First Edition",
+          "Revised Edition",
+          "Expanded Edition",
+          "Annotated Edition",
+          "Critical Edition",
+          "�Facsimile Edition�" /// Different from previous version 
+        ]
+      }
+    }
+  }
+}
+[RM1]Geographical Context of what? The story or the setting or the audience? If its for the audience then the geographical context will not work. Books can be read by citizens from any nationality.
+--- Based on the setting or stories place  
+[RM2]See the above comment. 
+[RM3]Specify what this is for. Is this for the setting? -- Yes
+[RM4]Not needed
+[RM5]Please note that historical periods are not exactly constant. This hierarchical node is very European. Whereas, other nations have their own periods of history. 
+[RM6]Not very clear. -- Based on characters in the story 
+[RM7R6]Whose role? -- of the characters in the story 
+[RM8]Which group? The group of characters in the text? -- Yes
+
+
+[RM5 Solution Could be ---]
+
+"Temporal_Context": {
+  "Global_Time_Frame": {
+    "Prehistory":[
+      "Prehistoric"
+    ],
+    "Antiquity": [
+      "Pre-5th Century"
+    ],
+    "First_Millennium_CE": [
+      "5th Century", 
+      "6th Century", 
+      "7th Century", 
+      "8th Century", 
+      "9th Century", 
+      "10th Century"
+    ],
+    "Second_Millennium_CE": {
+      "Early_Second_Millennium": [
+        "11th Century", 
+        "12th Century", 
+        "13th Century", 
+        "14th Century", 
+        "15th Century"
+      ],
+      "Late_Second_Millennium": [
+        "16th Century", 
+        "17th Century", 
+        "18th Century", 
+        "19th Century", 
+        "20th Century"
+      ]
+    },
+    "Third_Millennium_CE": [
+      "21st Century", 
+      "Present Day"
+    ],
+    "Future": [
+      "Near Future", 
+      "Far Future"
+    ]
+  },
+  "Regional_Historical_Eras": {
+    "Indian_History": [
+      "Vedic Period",   
+      "Maurya Era", 
+      "Gupta Era", 
+      "Delhi Sultanate", 
+      "Mughal Era", 
+      "British Raj"
+    ],
+    "European_and_British_History": [
+      "Classical Period", 
+      "Anglo-Saxon Era", 
+      "Norman Period", 
+      "Tudor Period", 
+      "Elizabethan Era", 
+      "Victorian Era", 
+      "Edwardian Era"
+    ],
+    "East_Asian_History": [
+      "Han Dynasty", 
+      "Tang Dynasty", 
+      "Song Dynasty", 
+      "Ming Dynasty", 
+      "Qing Dynasty", 
+      "Edo Period", 
+      "Meiji Era"
+    ]
+  }
+}

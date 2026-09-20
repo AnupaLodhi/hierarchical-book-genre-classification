@@ -76,3 +76,20 @@ data/clean_master_data.csv
 
 # Local reference repository
 reference_tmp/
+
+
+# Generated old-style research evidence
+data/book coverpage/
+data/book blurb/
+data/book reviews/
+
+# ==============================
+# Generated intermediate genre union
+# ==============================
+data/genre union/
+
+# ==============================
+# Generated experiment results
+# ==============================
+# Keep local until an experiment is finalized.
+results/

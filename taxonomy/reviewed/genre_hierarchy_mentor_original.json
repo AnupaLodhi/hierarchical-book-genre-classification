@@ -1,0 +1,848 @@
+{
+    "Fiction": {
+        "Literary Fiction": {
+            "General Literary Fiction": [
+                "Contemporary Fiction",
+                "Realistic Fiction",
+                "Domestic Fiction",
+                "Urban Fiction",
+                "Campus Novel",
+                "Slice of Life Fiction"
+            ],
+            "Classical and Experimental Fiction": [
+                "Classic Fiction",
+                "Modernist Fiction",
+                "Postmodern Fiction",
+                "Experimental Fiction",
+                "Absurdist Fiction"
+            ],
+            "Social and Political Fiction": [
+                "Political Fiction",
+                "Social Fiction",
+                "Philosophical Fiction",
+                "Psychological Fiction"
+            ],
+            "Family and Relationship Fiction": [
+                "Family Saga",
+                "Domestic Drama�",
+                "Friendship Fiction"
+            ],
+            "Short Form Literary Fiction": [
+                "Flash Fiction",
+                "Short Fiction",
+                "Novella Fiction"
+            ]
+        },
+        "Historical Fiction": {
+            "Historical[RM1] Fiction": [
+                "Ancient Historical Fiction",    /// I think we should remove time- period Subgenres and place them in metadata 
+                "Medieval Historical Fiction",
+                "Early Modern Historical Fiction",
+                "Modern Historical Fiction"
+            ],
+            "Historical Adventure Fiction": [
+                "Sea Adventure Fiction",
+                "Frontier Fiction",
+                "Exploration Fiction"
+            ],
+            "Historical Speculative Fiction": [
+                "Alternate History",
+                "Historical Fantasy",
+                "Gaslamp Fiction"
+            ],
+            "Biographical Historical Fiction": [
+                "Biographical Fiction"
+            ]
+        },
+        "Mystery": {
+            "Traditional Mystery": [
+                "�Children�s Adventure and Mystery�", /// Different from previous version 
+                "Whodunit",
+                "�Whydunit�",
+                "Locked Room Mystery",
+                "Golden Age Mystery",
+                "Cozy Mystery"
+            ],
+            "Detective Mystery": [
+                "Private Investigator Mystery",
+                "Amateur Detective Mystery",
+                "Police Detective Mystery"
+            ],
+            "Procedural Mystery": [
+                "Police Procedural",
+                "Forensic Mystery",
+                "Legal Mystery"
+            ],
+            "Crime Mystery": [
+                "Murder Mystery",
+                "Noir Mystery",
+                "Domestic Mystery",
+                "Campus Mystery"
+            ]
+        },
+        "Crime Fiction": {
+            "General Crime Fiction": [
+                "Crime Fiction",
+                "Murder Fiction",
+                "Underworld Fiction"
+            ],
+            "Noir and Hardboiled Fiction": [
+                "Noir",
+                "Hardboiled Fiction",
+                "Nordic Noir",
+                "Domestic Noir"
+            ],
+            "Legal and Courtroom Fiction": [
+                "Legal Fiction",
+                "Courtroom Drama"
+            ],
+            "Gangster and Organized Crime Fiction": [
+                "Gangster Fiction",
+                "Mafia Fiction"
+            ]
+        },
+        "Thriller": {
+            "Psychological Thriller": [
+                "Psychological Thriller",
+                "Domestic Thriller"
+            ],
+            "Action Thriller": [
+                "Action Thriller",
+                "Survival Thriller",
+                "Disaster Thriller"
+            ],
+            "Political and Espionage Thriller": [
+                "Political Thriller",
+                "Spy Thriller",
+                "Espionage Thriller"
+            ],
+            "Legal and Forensic Thriller": [
+                "Legal Thriller",
+                "Forensic Thriller",
+                "Medical Thriller"
+            ],
+            "Technological Thriller": [
+                "Techno Thriller",
+                "Cyber Thriller"
+            ]
+        },
+        "Suspense": {
+            "Suspense Fiction": [
+                "Suspense Fiction",
+                "Paranoid Fiction",
+                "Domestic Suspense"
+            ]
+        },
+        "Horror": {
+            "Supernatural Horror": [
+                "�Gothic�", /// Different from previous version 
+			    "Ghost Story",
+                "Occult Horror",
+                "Paranormal Horror",
+                "Demonic Horror"
+            ],
+            "Gothic Horror": [
+                "Gothic Fiction",
+                "Southern Gothic",
+                "Gothic Horror"
+            ],
+            "Psychological Horror": [
+                "Psychological Horror",
+                "Cosmic Horror",
+                "Lovecraftian Horror"
+            ],
+            "Monster Horror": [
+                "Monster Horror",
+                "Vampire Fiction",
+                "Werewolf Fiction",
+                "Zombie Fiction"
+            ],
+            "Extreme and Body Horror": [
+                "Body Horror",
+                "Splatterpunk",
+                "Slasher Horror"
+            ],
+            "Folk and Eco Horror": [
+                "Folk Horror",
+                "Eco Horror"
+            ]
+        },
+        "Romance": {
+            "General Romance": [
+                "Romance",
+                "Love Story",
+                "Courtship Romance"
+            ],
+            "Comic Romance": [
+                "Romantic Comedy"
+            ],
+            "Erotic Romance": [
+                "Erotic Romance",
+                "Passionate Romance"
+            ],
+            "Inspirational Romance": [
+                "Inspirational Romance",
+                "Clean Romance"
+            ],
+            "Relationship Trope Romance": [
+                "Second Chance Romance",
+                "Friends to Lovers Romance",
+                "Enemies to Lovers Romance",
+                "Workplace Romance"
+            ]
+        },
+        "Fantasy": {
+           "�Fairy Tales�": [    /// Different from previous version 
+                "�Fables�",
+                "�Retellings�",
+                "�Wonder/Magic Talees�"  /// Different from previous version 
+           ],    
+		   "Epic and High Fantasy": [
+                "Epic Fantasy",
+                "High Fantasy",
+                "Heroic Fantasy",
+                "Sword and Sorcery"
+            ],
+            "Low and Contemporary Fantasy": [
+                "Low Fantasy",
+                "Contemporary Fantasy",
+                "Urban Fantasy",
+                "Cozy Fantasy"
+            ],
+            "Dark Fantasy": [
+                "Dark Fantasy",
+                "Grimdark Fantasy"
+            ],
+            "Mythic and Folkloric Fantasy": [
+                "Mythic Fantasy",
+                "Mythic Retelling",
+                "Folkloric Fantasy",
+                "Fairy Tale Retelling"
+            ],
+            "Portal and Quest Fantasy": [
+                "Portal Fantasy",
+                "Quest Fantasy",
+                "Isekai"
+            ],
+            "Progression and Game Fantasy": [
+                "Progression Fantasy",
+                "LitRPG",
+                "GameLit"
+            ],
+            "Science Fantasy": [
+                "Science Fantasy",
+                "Sword and Planet"
+            ],
+            "Weird and Bizarro Fantasy": [
+                "Weird Fiction",
+                "Bizarro Fiction",
+                "New Weird"
+            ]
+        },
+        "Science Fiction": {
+            "General Science Fiction": [
+                "Science Fiction",
+                "Speculative Science Fiction",
+                "Futuristic Fiction"
+            ],
+            "Hard and Soft Science Fiction": [
+                "Hard Science Fiction",
+                "Soft Science Fiction"
+            ],
+            "Space Science Fiction": [
+                "Space Opera",
+                "Space Exploration Fiction",
+                "First Contact Fiction",
+                "Colonization Fiction"
+            ],
+            "Dystopian and Post Apocalyptic Fiction": [
+                "Dystopian Fiction",
+                "Post Apocalyptic Fiction",
+                "Apocalyptic Fiction",
+                "Utopian Fiction"
+            ],
+            "Cyber and Punk Science Fiction": [
+                "Cyberpunk",
+                "Biopunk",
+                "Nanopunk",
+                "Steampunk",
+                "Dieselpunk",
+                "Solarpunk",
+                "Atompunk"
+            ],
+            "Climate and Ecological Fiction": [
+                "Climate Fiction",
+                "Eco Fiction",
+                "�Petro Fiction�"   /// Different from previous version 
+            ],
+            "Artificial Intelligence and Posthuman Fiction": [
+                "Artificial Intelligence Fiction",
+                "Posthuman Fiction"
+            ],
+            "Military Science Fiction": [
+                "Military Science Fiction"
+            ],
+            "Optimistic Science Fiction": [
+                "Hopepunk"
+            ]
+        },
+        "Speculative Fiction": {
+            "General Speculative Fiction": [
+                "Speculative Fiction",
+                "Slipstream",
+                "Speculative Literary Fiction"
+            ],
+            "Magical and Surreal Fiction": [
+                "Magical Realism",
+                "Surreal Fiction"
+            ],
+            "Metafictional Speculative Fiction": [
+                "Metafiction",
+                "Self Referential Fiction"
+            ]
+        },
+        "Adventure": {
+            "General Adventure Fiction": [
+                "Adventure Fiction",
+                "Action Adventure",
+                "Quest Adventure",
+                "�Road Fiction�",
+                "�Picaresque�"
+            ],
+            "Survival and Exploration Fiction": [
+                "Survival Fiction",
+                "Exploration Adventure",
+                "Jungle Adventure",
+                "Sea Adventure"
+            ],
+            "Treasure and Expedition Fiction": [
+                "Treasure Hunt Adventure",
+                "Expedition Fiction"
+            ]
+        },
+        "Action Fiction": {
+            "General Action Fiction": [
+                "Action Fiction",
+                "Pulp Fiction"
+            ],
+            "Military and Combat Fiction": [
+                "Military Fiction",
+                "War Fiction",
+                "Combat Fiction"
+            ],
+            "Western Fiction": [
+                "Western",
+                "Frontier Western"
+            ]
+        },
+        "Mythological Fiction": {
+            "Mythological Fiction": [
+                "Mythological Fiction",
+                "Mythological Epic",
+                "Legend Retelling"
+            ],
+            "Biblical and Sacred Fiction": [
+                "Biblical Fiction",
+                "Religious Fiction"
+            ]
+        },
+        "Humor and Satire": {
+            "Humorous Fiction": [
+                " FictiComedyon",
+                "Humor Fiction",
+                "Black Comedy"
+            ],
+            "Satirical Fiction": [
+                "Satire",
+                "Satirical Fiction",
+                "Parody",
+                "Spoof"
+            ]
+        },
+        "Drama": {
+            "General Drama": [
+                "Drama",
+                "Tragedy",
+                "Melodrama",
+                "�Absurd Drama�",/// Different from previous version 
+                "�Third Theatre�",/// Different from previous version 
+                "�Epic Drama�",/// Different from previous version 
+                "�Tragicomedy�",  /// Different from previous version 
+                "�Romantic Drama�",/// Different from previous version 
+                "�Morality plays�",/// Different from previous version 
+                "�Religious Drama�",/// Different from previous version 
+                "�Folk Drama�"/// Different from previous version 
+            ],
+
+            "�Comedy�" : [   /// Different from previous version 
+              "�romantic�", 
+               "�farce�", 
+               "�Comedy of manners�", /// Different from previous version 
+                "�sentimental comedy�", /// Different from previous version 
+                "�satire�"
+           ],
+
+            "Social Drama": [
+                "Family Drama",
+                "Courtroom Drama",
+                "Political Drama"
+            ]
+        },
+        "Animal Fiction": {
+            "Animal Fiction": [
+                "Animal Story",
+                "Animal Fantasy",
+                "Wildlife Fiction"
+            ]
+        },
+        "Comics and Sequential Fiction": {
+            "Comics": [
+                "Comics",
+                "Superhero Comics",
+                "Underground Comics"
+            ],
+            "Manga and Related Comics": [
+                "Manga",
+                "Manhua",
+                "Manhwa"
+            ],
+            "Graphic Fiction": [
+                "Graphic Fiction",
+                "Graphic Narrative"
+            ]
+        }
+    },
+    "Nonfiction": {
+        "Biography": {
+            "Biography": [
+                "Biography",
+                "Collective Biography",
+                "Literary Biography",
+                "Scientific Biography",
+                "Political Biography",
+                "Business Biography",
+                "Artistic Biography",
+                "Sports Biography"
+            ]
+        },
+        "Memoir": {
+            "Memoir": [
+                "Memoir",
+                "�Autobiography�",  /// Different from previous version  
+                "Personal Memoir",
+                "Professional Memoir",
+                "Travel Memoir",
+                "Culinary Memoir",
+                "Animal Memoir"
+            ]
+        },
+        "History": {
+            "General History": [
+                "Ancient History",
+                "Classical History",
+                "Medieval History",
+                "Early Modern History",
+                "Modern History",
+                "Contemporary History"
+            ],
+            "Military History": [
+                "Military History",
+                "Naval History",
+                "Maritime History",
+                "War History"
+            ],
+            "Social and Cultural History": [
+                "Social History",
+                "Cultural History",
+                "Intellectual History",
+                "Economic History",
+                "Political History",
+                "Diplomatic History"
+            ],
+            "Microhistory": [
+                "Microhistory"
+            ],
+            "History of Science": [
+                "History of Science",
+                "History of Technology",
+                "History of Medicine"
+            ]
+        },
+        "Philosophy": {
+            "Core Philosophy": [
+                "Philosophy",
+                "Ethics",
+                "Epistemology",
+                "Metaphysics",
+                "Logic",
+                "Political Philosophy"
+            ],
+            "Applied Philosophy": [
+                "Environmental Ethics",
+                "Medical Ethics",
+                "Social Philosophy"
+            ]
+        },
+        "Religion and Spirituality": {
+            "Religion": [
+                "Religion",
+                "Comparative Religion",
+                "Theology",
+                "Religious History",
+                "Religious Texts",
+                "Religious Teachings"
+            ],
+            "Mythology and Folklore": [
+                "Mythology",
+                "Comparative Mythology",
+                "Folklore"
+            ],
+            "Spirituality": [
+                "Spirituality",
+                "Meditation",
+                "Mindfulness",
+                "Mysticism",
+                "Esoteric Traditions",
+                "New Age"
+            ]
+        },
+        "Science": {
+            "Life Sciences": [
+                "Biology",
+                "Biochemistry",
+                "Genetics",
+                "Microbiology",
+                "Zoology",
+                "Botany",
+                "Ecology"
+                
+            ],
+            "Physical Sciences": [
+                "Physics",
+                "Chemistry",
+                "Astronomy",
+                "Astrophysics"
+            ],
+            "Earth and Environmental Sciences": [
+                "Earth Science",
+                "Geology",
+                "Environmental Science",
+                "Climate Science",
+                "Conservation Biology"
+            ],
+            "Cognitive and Behavioral Sciences": [
+                "Psychology",
+                "Cognitive Science",
+                "Neuroscience",
+                "Psychoanalysis"
+            ],
+            "Popular Science": [
+                "Popular Science",
+                "Science Communication"
+            ]
+        },
+        "Mathematics": {
+            "Mathematics": [
+                "Mathematics",
+                "Algebra",
+                "Geometry",
+                "Calculus",
+                "Statistics",
+                "Applied Mathematics"
+            ]
+        },
+        "Technology and Computing": {
+            "Computing": [
+                "Programming",
+                "Data Science",
+                "Artificial Intelligence",
+                "Cybersecurity",
+                "Software Engineering"
+            ],
+            "Technology": [
+                "Robotics",
+                "Digital Media",
+                "Virtual Reality",
+                "Internet of Things",
+                "Technology Studies",
+                "�Biotechnology�"    /// Different from previous version  
+            ]
+        },
+        "Business and Economics": {
+            "Business": [
+                "Business",
+                "Management",
+                "Leadership",
+                "Organizational Behavior",
+                "Corporate Strategy",
+                "Entrepreneurship",
+                "Marketing"
+            ],
+            "Finance": [
+                "Corporate Finance",
+                "Personal Finance",
+                "Financial Planning",
+                "Investing",
+                "Banking",
+                "Behavioral Finance"
+            ],
+            "Economics": [
+                "Economics",
+                "Political Economy",
+                "Labor Economics",
+                "Development Economics",
+                "�Socialist�",
+                "�Capitalist�" 
+            ]
+        },
+        "Politics and Law": {
+            "Politics": [
+                "Political Nonfiction",
+                "Public Policy",
+                "Political Analysis",
+                "Political Theory"
+            ],
+            "Law": [
+                "Law",
+                "Legal Nonfiction",
+                "Constitutional Law",
+                "Human Rights Law", 
+                "�Animal Rights Law�", /// Different from previous version 
+            ]
+        },
+        "Medicine and Health": {
+            "Medicine": [
+                "Clinical Medicine",
+                "Internal Medicine",
+                "Surgery",
+                "Neurology",
+                "Cardiology",
+                "Oncology",
+                "Pediatrics",
+                "Psychiatry",
+                "Pharmacology"
+            ],
+            "Public and Preventive Health": [
+                "Public Health",
+                "Epidemiology",
+                "Preventive Medicine",
+                "Healthcare Systems"
+            ],
+            "Health and Wellness": [
+                "Health",
+                "Wellness",
+                "Nutrition",
+                "Fitness",
+                "Mental Health"
+            ]
+        },
+        "Education": {
+            "Education": [
+                "Education",
+                "Pedagogy",
+                "Curriculum Studies",
+                "Educational Psychology"
+            ]
+        },
+        "Language and Linguistics": {
+            "Language": [
+                "Language Studies",
+                "Grammar",
+                "Etymology",
+                "Translation Studies",
+                "Lexicography"
+            ],
+            "Linguistics": [
+                "Linguistics",
+                "Sociolinguistics",
+                "Semiotics",
+                "Discourse Studies"
+            ],
+            "Writing Studies": [
+                "Creative Writing",
+                "Rhetoric",
+                "Editing",
+                "Style Guides"
+            ][RM2]
+        },
+        "Journalism and Media Studies": {
+            "Journalism": [
+                "Journalism",
+                "Investigative Journalism",
+                "Political Reporting",
+                "War Reporting",
+                "Business Journalism",
+                "Cultural Journalism"
+            ],
+            "Media Studies": [
+                "Media Studies",
+                "Media Ethics",
+                "News Analysis",
+                "Broadcast Media",
+                "Print Media"
+            ]
+        },
+        "Arts and Culture": {
+            "Arts": [
+                "Art History",
+                "Art Criticism",
+                "Aesthetics",
+                "Painting",
+                "Sculpture",
+                "Design"
+            ],
+            "Music": [
+                "Music",
+                "Music History",
+                "Music Theory"
+            ],
+            "Theatre and Performance": [
+                "Theatre",
+                "Performance Studies"
+            ],
+            "Photography": [
+                "Photography",
+                "Photojournalism",
+                "Portrait Photography",
+                "Landscape Photography",
+                "Wildlife Photography"
+            ],
+            "Cultural Studies": [
+                "Cultural Studies",
+                "Popular Culture",
+                "Counterculture"
+            ]
+        },
+        "Travel": {
+            "Travel Writing": [
+                "Travelogue",
+                "Travel Writing",
+                "Adventure Travel Writing",
+                "Cultural Travel Writing",
+                "Nature Travel Writing"
+            ],
+            "Travel Guide": [
+                "Guidebook",
+                "Travel Planning",
+                "Travel Tips"
+            ]
+        },
+        "Nature and Environment": {
+            "Nature Writing": [
+                "Nature Writing",
+                "Natural History",
+                "Wildlife Writing"
+            ],
+            "Environment": [
+                "Environmental Nonfiction",
+                "Conservation Writing",
+                "Sustainability"
+            ],
+            "Animals and Wildlife": [
+                "Animal Behavior",
+                "Wildlife Studies",
+                "Marine Life",
+                "Ornithology"
+            ],
+            "Plants and Gardening": [
+                "Botany",
+                "Horticulture",
+                "Gardening"
+            ]
+        },
+        "Sports and Outdoors": {
+            "Sports": [
+                "Sports Nonfiction",
+                "Sport History",
+                "Sport Analysis",
+                "Martial Arts"
+            ],
+            "Outdoor Recreation": [
+                "Hiking",
+                "Mountaineering",
+                "Rock Climbing",
+                "Fishing",
+                "Backpacking"
+            ]
+        },
+        "Cooking and Food": {
+            "Cooking": [
+                "Cookbook",
+                "Home Cooking",
+                "Baking",
+                "Vegetarian Cooking",
+                "Vegan Cooking",
+                "Gluten Free Cooking"
+            ],
+            "Food Writing": [
+                "Culinary Writing",
+                "Food History",
+                "Regional Cuisine",
+                "Gastronomy"
+            ]
+        },
+        "Self Help and Personal Development": {
+            "Self Help": [
+                "Self Help",
+                "Personal Development",
+                "Life Coaching",
+                "Mindset",
+                "Emotional Intelligence",
+                "Confidence",
+                "Resilience"
+            ],
+            "Productivity": [
+                "Productivity",
+                "Time Management",
+                "Habit Building",
+                "Decision Making",
+                "Self Discipline"
+            ],
+            "Motivation": [
+                "Motivation",
+                "Inspirational Nonfiction"
+            ]
+        },
+        "Crafts and Hobbies": {
+            "Crafts": [
+                "HandiCrafts",
+                "Knitting",
+                "Crochet",
+                "Quilting",
+                "Woodworking",
+                "Origami"
+            ],
+            "Hobbies": [
+                "Gaming",
+                "Collecting",
+                "Singing"
+            ]
+        },
+        "Humor Nonfiction": {
+            "Humor": [
+                "Humor Nonfiction",
+                "Humorous Essays",
+                "Stand Up Comedy",
+                "Wit and Wordplay",
+                "�Satire�"
+            ]
+        },
+        "Reference and Knowledge Organization": {
+            "Reference": [
+                "Dictionary",
+                "Encyclopedia",
+                "Manual",
+                "Handbook",
+                "Field Guide"
+            ],
+            "Library and Information Studies": [
+                "Librarianship",
+                "Information Studies[RM3]"  /// should be removed not a genre 
+            ]
+        }
+    }
+}
+
+[RM1]The historical eras can be based on national sensibility. For example, India can have a mughal era, Britain an Anglo Saxon era. How to account for this?
+[RM2]Should this be here? Why should this be  under genre?  
+[RM3]Please review this. 

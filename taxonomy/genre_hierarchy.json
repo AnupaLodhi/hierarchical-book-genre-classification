@@ -34,12 +34,6 @@
       ]
     },
     "Historical Fiction": {
-      "Historical Fiction": [
-        "Ancient Historical Fiction",
-        "Medieval Historical Fiction",
-        "Early Modern Historical Fiction",
-        "Modern Historical Fiction"
-      ],
       "Historical Adventure Fiction": [
         "Sea Adventure Fiction",
         "Frontier Fiction",
@@ -56,7 +50,9 @@
     },
     "Mystery": {
       "Traditional Mystery": [
+        "Childrens Adventure and Mystery",
         "Whodunit",
+        "Whydunit",
         "Locked Room Mystery",
         "Golden Age Mystery",
         "Cozy Mystery"
@@ -133,6 +129,7 @@
     },
     "Horror": {
       "Supernatural Horror": [
+        "Gothic",
         "Ghost Story",
         "Occult Horror",
         "Paranormal Horror",
@@ -189,6 +186,11 @@
       ]
     },
     "Fantasy": {
+      "Fairy Tales": [
+        "Fables",
+        "Retellings",
+        "Wonder/Magic Talees"
+      ],
       "Epic and High Fantasy": [
         "Epic Fantasy",
         "High Fantasy",
@@ -264,7 +266,8 @@
       ],
       "Climate and Ecological Fiction": [
         "Climate Fiction",
-        "Eco Fiction"
+        "Eco Fiction",
+        "Petro Fiction"
       ],
       "Artificial Intelligence and Posthuman Fiction": [
         "Artificial Intelligence Fiction",
@@ -296,7 +299,9 @@
       "General Adventure Fiction": [
         "Adventure Fiction",
         "Action Adventure",
-        "Quest Adventure"
+        "Quest Adventure",
+        "Road Fiction",
+        "Picaresque"
       ],
       "Survival and Exploration Fiction": [
         "Survival Fiction",
@@ -337,7 +342,7 @@
     },
     "Humor and Satire": {
       "Humorous Fiction": [
-        "Comedy Fiction",
+        " FictiComedyon",
         "Humor Fiction",
         "Black Comedy"
       ],
@@ -352,7 +357,22 @@
       "General Drama": [
         "Drama",
         "Tragedy",
-        "Melodrama"
+        "Melodrama",
+        "Absurd Drama",
+        "Third Theatre",
+        "Epic Drama",
+        "Tragicomedy",
+        "Romantic Drama",
+        "Morality plays",
+        "Religious Drama",
+        "Folk Drama"
+      ],
+      "Comedy": [
+        "romantic",
+        "farce",
+        "Comedy of manners",
+        "sentimental comedy",
+        "satire"
       ],
       "Social Drama": [
         "Family Drama",
@@ -400,6 +420,7 @@
     "Memoir": {
       "Memoir": [
         "Memoir",
+        "Autobiography",
         "Personal Memoir",
         "Professional Memoir",
         "Travel Memoir",
@@ -534,7 +555,8 @@
         "Digital Media",
         "Virtual Reality",
         "Internet of Things",
-        "Technology Studies"
+        "Technology Studies",
+        "Biotechnology"
       ]
     },
     "Business and Economics": {
@@ -559,7 +581,9 @@
         "Economics",
         "Political Economy",
         "Labor Economics",
-        "Development Economics"
+        "Development Economics",
+        "Socialist",
+        "Capitalist"
       ]
     },
     "Politics and Law": {
@@ -573,7 +597,8 @@
         "Law",
         "Legal Nonfiction",
         "Constitutional Law",
-        "Human Rights Law"
+        "Human Rights Law",
+        "Animal Rights Law"
       ]
     },
     "Medicine and Health": {
@@ -771,7 +796,7 @@
     },
     "Crafts and Hobbies": {
       "Crafts": [
-        "Crafts",
+        "HandiCrafts",
         "Knitting",
         "Crochet",
         "Quilting",
@@ -789,7 +814,8 @@
         "Humor Nonfiction",
         "Humorous Essays",
         "Stand Up Comedy",
-        "Wit and Wordplay"
+        "Wit and Wordplay",
+        "Satire"
       ]
     },
     "Reference and Knowledge Organization": {
@@ -801,8 +827,7 @@
         "Field Guide"
       ],
       "Library and Information Studies": [
-        "Librarianship",
-        "Information Studies"
+        "Librarianship"
       ]
     }
   }
