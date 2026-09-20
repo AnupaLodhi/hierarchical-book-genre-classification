@@ -170,7 +170,7 @@ assert (
     == len(data)
 )
 
-print("\n✅ All 400 books accounted for")
+print(f"\n✅ All {len(data)} input books accounted for")
 print("results/consensus/perfect_consensus.csv")
 print("results/consensus/partial_agreement.csv")
 print("results/consensus/conflicting_annotations.csv")

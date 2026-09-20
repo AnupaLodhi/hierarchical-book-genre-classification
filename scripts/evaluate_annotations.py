@@ -13,8 +13,10 @@ def paths(ann, field):
     return set(ann.get(field, []) or [])
 
 def jaccard(a, b):
+    # Empty-empty contains no positive annotation evidence.
+    # Exclude it from mean Jaccard instead of treating it as perfect agreement.
     if not a and not b:
-        return 1.0
+        return None
     return len(a & b) / len(a | b)
 
 availability = Counter()
@@ -28,6 +30,8 @@ pairs = {
         "both_exact": 0,
         "genre_jaccard": 0.0,
         "metadata_jaccard": 0.0,
+        "genre_jaccard_n": 0,
+        "metadata_jaccard_n": 0,
     }
     for a, b in combinations(MODELS, 2)
 }
@@ -65,8 +69,16 @@ for book in data:
         s["genre_exact"] += ga == gb
         s["metadata_exact"] += ma == mb
         s["both_exact"] += ga == gb and ma == mb
-        s["genre_jaccard"] += jaccard(ga, gb)
-        s["metadata_jaccard"] += jaccard(ma, mb)
+        genre_j = jaccard(ga, gb)
+        metadata_j = jaccard(ma, mb)
+
+        if genre_j is not None:
+            s["genre_jaccard"] += genre_j
+            s["genre_jaccard_n"] += 1
+
+        if metadata_j is not None:
+            s["metadata_jaccard"] += metadata_j
+            s["metadata_jaccard_n"] += 1
 
     if len(good) == 3:
         three_n += 1
@@ -130,8 +142,16 @@ for (a, b), s in pairs.items():
         "exact_genre_rate": s["genre_exact"] / n,
         "exact_metadata_rate": s["metadata_exact"] / n,
         "exact_both_rate": s["both_exact"] / n,
-        "mean_genre_jaccard": s["genre_jaccard"] / n,
-        "mean_metadata_jaccard": s["metadata_jaccard"] / n,
+        "mean_genre_jaccard": (
+            s["genre_jaccard"] / s["genre_jaccard_n"]
+            if s["genre_jaccard_n"] else None
+        ),
+        "mean_metadata_jaccard": (
+            s["metadata_jaccard"] / s["metadata_jaccard_n"]
+            if s["metadata_jaccard_n"] else None
+        ),
+        "genre_jaccard_books": s["genre_jaccard_n"],
+        "metadata_jaccard_books": s["metadata_jaccard_n"],
     }
 
     summary["pairwise"][f"{a}_vs_{b}"] = result
@@ -140,8 +160,19 @@ for (a, b), s in pairs.items():
     print(f"  Exact genre:    {result['exact_genre_rate']*100:.2f}%")
     print(f"  Exact metadata: {result['exact_metadata_rate']*100:.2f}%")
     print(f"  Exact both:     {result['exact_both_rate']*100:.2f}%")
-    print(f"  Genre Jaccard:  {result['mean_genre_jaccard']:.3f}")
-    print(f"  Metadata Jaccard: {result['mean_metadata_jaccard']:.3f}")
+    gj = result["mean_genre_jaccard"]
+    mj = result["mean_metadata_jaccard"]
+
+    print(
+        "  Genre Jaccard: ",
+        f"{gj:.3f}" if gj is not None else "N/A",
+        f"(n={result['genre_jaccard_books']})",
+    )
+    print(
+        "  Metadata Jaccard:",
+        f"{mj:.3f}" if mj is not None else "N/A",
+        f"(n={result['metadata_jaccard_books']})",
+    )
 
 OUTPUT.write_text(
     json.dumps(summary, indent=2),

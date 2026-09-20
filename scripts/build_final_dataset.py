@@ -131,11 +131,26 @@ all_isbns = [x["isbn13"] for x in final] + [
     x["isbn13"] for x in manual
 ]
 
-assert len(all_isbns) == 400, (
-    f"Expected 400 accounted books, got {len(all_isbns)}"
+expected_isbns = set()
+
+for group in (
+    perfect,
+    partial,
+    debate_inputs,
+    incomplete,
+    no_evidence,
+):
+    expected_isbns.update(
+        str(x["isbn13"])
+        for x in group
+    )
+
+assert set(map(str, all_isbns)) == expected_isbns, (
+    "Final/manual outputs do not exactly match "
+    "the experiment input ISBNs"
 )
 
-assert len(set(all_isbns)) == 400, (
+assert len(all_isbns) == len(set(map(str, all_isbns))), (
     "Duplicate ISBN detected between final/manual outputs"
 )
 

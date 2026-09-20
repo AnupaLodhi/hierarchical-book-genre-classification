@@ -59,7 +59,18 @@ Resolve the disagreement using the following rules:
 11. Prefer fewer strongly supported paths over speculative annotations.
 12. If no candidate is adequately supported, return an empty list for
     that category.
-13. Return JSON only.
+13. Geographical Context means the geographical SETTING or place of the
+    story/content. Do NOT infer it from author nationality, publication
+    country, publisher, ISBN origin, language, or labels such as
+    "American Short stories" or "English Short stories" unless the
+    filtered evidence explicitly describes the story/content setting.
+14. Role_Profile refers specifically to roles of characters in the story.
+15. Group_Profile refers specifically to groups of characters represented
+    in the text.
+16. Temporal metadata must be supported by explicit temporal evidence.
+    Do not infer a historical era merely because a genre annotation is
+    Historical Fiction.
+17. Return JSON only.
 
 Required format:
 {{
@@ -85,6 +96,7 @@ def resolve_debate(book, taxonomies, model=DEFAULT_RESOLVER_MODEL):
     raw = query_openrouter(
         prompt,
         model,
+        max_tokens=350,
     )
 
     parsed = extract_json(raw)
