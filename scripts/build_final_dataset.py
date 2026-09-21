@@ -6,6 +6,7 @@ from collections import Counter
 CONSENSUS = Path("results/consensus")
 RESOLUTION = Path("results/resolution")
 FINAL = Path("results/final")
+FINAL.mkdir(parents=True, exist_ok=True)
 
 perfect = json.load(open(CONSENSUS / "perfect_consensus.json"))
 partial = json.load(open(CONSENSUS / "partial_agreement.json"))

@@ -5,6 +5,8 @@ from pathlib import Path
 from agents.annotation_agent import load_taxonomies
 
 OUT = Path("results/final")
+EVALUATION = Path("results/evaluation")
+EVALUATION.mkdir(parents=True, exist_ok=True)
 
 final = json.loads(
     (OUT / "final_output.json").read_text(encoding="utf-8")
@@ -129,7 +131,7 @@ report = {
     "top_metadata_paths": metadata_counts.most_common(20),
 }
 
-(Path("results/evaluation/final_integrity_audit.json")).write_text(
+(EVALUATION / "final_integrity_audit.json").write_text(
     json.dumps(report, indent=2, ensure_ascii=False),
     encoding="utf-8",
 )
