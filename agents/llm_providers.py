@@ -109,7 +109,7 @@ def query_groq(
 def query_gemini(
     prompt,
     model,
-    max_tokens=500,
+    max_tokens=1000,
     max_retries=4,
 ):
     _load_env()
@@ -117,24 +117,21 @@ def query_gemini(
     api_key = os.environ.get("GEMINI_API_KEY")
 
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY is not configured")
+        raise RuntimeError(
+            "GEMINI_API_KEY is not configured"
+        )
 
     url = (
         "https://generativelanguage.googleapis.com/"
-        f"v1beta/models/{model}:generateContent"
+        "v1beta/interactions"
     )
 
     payload = {
-        "contents": [
-            {
-                "role": "user",
-                "parts": [{"text": prompt}],
-            }
-        ],
-        "generationConfig": {
+        "model": model,
+        "input": prompt,
+        "generation_config": {
             "temperature": 0,
-            "maxOutputTokens": max_tokens,
-            "responseMimeType": "application/json",
+            "max_output_tokens": max_tokens,
         },
     }
 
@@ -155,41 +152,43 @@ def query_gemini(
         try:
             with urllib.request.urlopen(
                 req,
-                timeout=120,
+                timeout=180,
             ) as response:
                 data = json.loads(
                     response.read().decode("utf-8")
                 )
 
-            candidates = data.get("candidates", [])
-
-            if not candidates:
+            if data.get("error"):
                 raise RuntimeError(
-                    "Gemini returned no candidates"
+                    "Gemini provider error: "
+                    + json.dumps(
+                        data["error"],
+                        ensure_ascii=False,
+                    )[:1000]
                 )
 
-            candidate = candidates[0]
+            texts = []
 
-            parts = (
-                candidate
-                .get("content", {})
-                .get("parts", [])
-            )
+            for step in data.get("steps", []):
+                if step.get("type") != "model_output":
+                    continue
 
-            content = "".join(
-                part.get("text", "")
-                for part in parts
-                if isinstance(part, dict)
-            ).strip()
+                for item in step.get("content", []):
+                    if (
+                        isinstance(item, dict)
+                        and item.get("type") == "text"
+                    ):
+                        value = item.get("text", "")
+
+                        if value:
+                            texts.append(value)
+
+            content = "\n".join(texts).strip()
 
             if not content:
-                finish_reason = candidate.get(
-                    "finishReason"
-                )
-
                 raise RuntimeError(
-                    "Gemini returned empty final content "
-                    f"(finish_reason={finish_reason})"
+                    "Gemini returned no model_output text "
+                    f"(status={data.get('status')})"
                 )
 
             return content
@@ -219,10 +218,28 @@ def query_gemini(
                 f"{error_body[:1000]}"
             ) from error
 
-    raise RuntimeError(
-        "Gemini retry loop ended unexpectedly"
-    )
+        except (
+            TimeoutError,
+            urllib.error.URLError,
+        ) as error:
+            if attempt < max_retries:
+                wait_seconds = 2 ** attempt
 
+                print(
+                    "    Gemini connection error; "
+                    f"retrying in {wait_seconds}s..."
+                )
+
+                time.sleep(wait_seconds)
+                continue
+
+            raise RuntimeError(
+                f"Gemini connection error: {error}"
+            ) from error
+
+    raise RuntimeError(
+        "Gemini request failed after retries"
+    )
 
 def query_openrouter(
     prompt,
