@@ -94,7 +94,9 @@ for isbn, inp in debate_input_by_isbn.items():
     final.append({
         "isbn13": isbn,
         "title": inp.get("title", ""),
-        "resolution_method": "debate_resolver_nex",
+        "resolution_method": "debate_resolver",
+        "resolver_provider": result.get("provider", ""),
+        "resolver_model": result.get("model", ""),
         "genre_paths": genres,
         "metadata_paths": metadata,
     })
@@ -178,6 +180,8 @@ with open(
         "isbn13",
         "title",
         "resolution_method",
+        "resolver_provider",
+        "resolver_model",
         "genre_paths",
         "metadata_paths",
     ]
@@ -190,6 +194,8 @@ with open(
             "isbn13": x["isbn13"],
             "title": x["title"],
             "resolution_method": x["resolution_method"],
+            "resolver_provider": x.get("resolver_provider", ""),
+            "resolver_model": x.get("resolver_model", ""),
             "genre_paths": " | ".join(x["genre_paths"]),
             "metadata_paths": " | ".join(x["metadata_paths"]),
         })

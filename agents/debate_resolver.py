@@ -4,12 +4,14 @@ from agents.annotation_agent import (
     retrieve_candidate_paths,
     validate_annotation,
 )
-from agents.genre_filtering_agent import (
-    query_openrouter,
-    extract_json,
-)
+from agents.llm_providers import query_model
+from scripts.run_annotations import parse_annotation_json_strict
 
-DEFAULT_RESOLVER_MODEL = "nex-agi/nex-n2.5-pro:free"
+DEFAULT_RESOLVER = {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "max_tokens": 700,
+}
 
 
 def build_debate_prompt(book, candidates):
@@ -80,7 +82,13 @@ Required format:
 """.strip()
 
 
-def resolve_debate(book, taxonomies, model=DEFAULT_RESOLVER_MODEL):
+def resolve_debate(
+    book,
+    taxonomies,
+    resolver=None,
+):
+    config = resolver or DEFAULT_RESOLVER
+
     tags = book.get("filtered_tags", [])
 
     candidates = retrieve_candidate_paths(
@@ -93,13 +101,14 @@ def resolve_debate(book, taxonomies, model=DEFAULT_RESOLVER_MODEL):
         candidates,
     )
 
-    raw = query_openrouter(
+    raw = query_model(
         prompt,
-        model,
-        max_tokens=350,
+        provider=config["provider"],
+        model=config["model"],
+        max_tokens=config.get("max_tokens", 700),
     )
 
-    parsed = extract_json(raw)
+    parsed = parse_annotation_json_strict(raw)
 
     validated = validate_annotation(
         parsed,
@@ -108,7 +117,8 @@ def resolve_debate(book, taxonomies, model=DEFAULT_RESOLVER_MODEL):
     )
 
     return {
-        "model": model,
+        "provider": config["provider"],
+        "model": config["model"],
         "genre_paths": validated["genre_paths"],
         "metadata_paths": validated["metadata_paths"],
         "candidate_genre_paths": candidates["genre_paths"],
