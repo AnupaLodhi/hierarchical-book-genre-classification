@@ -200,7 +200,7 @@ def query_gemini(
             )
 
             if (
-                error.code in (429, 503)
+                error.code == 503
                 and attempt < max_retries
             ):
                 wait_seconds = 2 ** attempt
