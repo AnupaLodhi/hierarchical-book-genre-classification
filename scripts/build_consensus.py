@@ -5,7 +5,7 @@ from collections import Counter
 
 INPUT = Path("results/annotations/multi_llm_annotations.json")
 OUT_DIR = Path("results/consensus")
-MODELS = ["llama", "qwen", "mistral"]
+MODELS = ["qwen_groq", "gpt_oss_groq", "gemini_google"]
 
 
 def norm(paths):
