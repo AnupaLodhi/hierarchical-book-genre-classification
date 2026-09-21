@@ -11,21 +11,29 @@ from agents.annotation_agent import (
     validate_annotation,
 )
 
-from agents.genre_filtering_agent import (
-    query_openrouter,
-    extract_json,
-)
+from agents.llm_providers import query_model
 
 INPUT = Path("results/filtering/processed_book_genres.json")
 OUTPUT = Path("results/annotations/multi_llm_annotations.json")
 CSV_OUTPUT = Path("results/annotations/multi_llm_annotations.csv")
 
 MODELS = {
-    "llama": "meta-llama/llama-3.3-70b-instruct",
-    "qwen": "qwen/qwen-2.5-72b-instruct",
-    "mistral": "mistralai/mistral-small-2603",
+    "qwen_groq": {
+        "provider": "groq",
+        "model": "qwen/qwen3.8-27b",
+        "max_tokens": 700,
+    },
+    "gpt_oss_groq": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "max_tokens": 700,
+    },
+    "gemini_google": {
+        "provider": "gemini",
+        "model": "gemini-3.8-flash",
+        "max_tokens": 1000,
+    },
 }
-
 
 def load_existing():
     if not OUTPUT.exists():
@@ -118,9 +126,100 @@ def save_checkpoint(records):
             writer.writerow(row)
 
 
+
+def parse_annotation_json_strict(raw):
+    """
+    Parse annotation output without silently converting malformed
+    model responses into empty annotations.
+
+    Explicit empty lists are valid abstentions.
+    Malformed/truncated JSON is an error.
+    """
+    if not isinstance(raw, str) or not raw.strip():
+        raise RuntimeError(
+            "Model returned empty annotation response"
+        )
+
+    text = raw.strip()
+
+    # Accept a single Markdown JSON code fence.
+    if text.startswith("```"):
+        lines = text.splitlines()
+
+        if lines and lines[0].strip().lower() in {
+            "```",
+            "```json",
+        }:
+            lines = lines[1:]
+
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+
+        text = "\n".join(lines).strip()
+
+    # Some models may add short text around the JSON.
+    # Extract only when both complete object boundaries exist.
+    if not text.startswith("{") or not text.endswith("}"):
+        start = text.find("{")
+        end = text.rfind("}")
+
+        if start < 0 or end <= start:
+            raise RuntimeError(
+                "Model returned incomplete or non-JSON annotation"
+            )
+
+        text = text[start:end + 1].strip()
+
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(
+            f"Model returned malformed annotation JSON: {exc}"
+        ) from exc
+
+    if not isinstance(parsed, dict):
+        raise RuntimeError(
+            "Annotation response must be a JSON object"
+        )
+
+    required = {
+        "genre_paths",
+        "metadata_paths",
+    }
+
+    missing = required - set(parsed)
+
+    if missing:
+        raise RuntimeError(
+            "Annotation response missing required keys: "
+            + ", ".join(sorted(missing))
+        )
+
+    if not isinstance(parsed["genre_paths"], list):
+        raise RuntimeError(
+            "genre_paths must be a JSON list"
+        )
+
+    if not isinstance(parsed["metadata_paths"], list):
+        raise RuntimeError(
+            "metadata_paths must be a JSON list"
+        )
+
+    for field in ("genre_paths", "metadata_paths"):
+        if not all(
+            isinstance(value, str)
+            for value in parsed[field]
+        ):
+            raise RuntimeError(
+                f"{field} must contain only strings"
+            )
+
+    return parsed
+
+
 def annotate_model(
     book,
-    model,
+    config,
     taxonomies,
     candidates,
 ):
@@ -131,13 +230,27 @@ def annotate_model(
         candidates["metadata_paths"],
     )
 
-    raw = query_openrouter(
+    raw = query_model(
         prompt,
-        model,
-        max_tokens=350,
+        provider=config["provider"],
+        model=config["model"],
+        max_tokens=config.get("max_tokens", 350),
     )
 
-    parsed = extract_json(raw)
+    parsed = parse_annotation_json_strict(raw)
+
+    if not isinstance(parsed, dict):
+        raise RuntimeError(
+            "Model response could not be parsed as a JSON object"
+        )
+
+    if (
+        "genre_paths" not in parsed
+        or "metadata_paths" not in parsed
+    ):
+        raise RuntimeError(
+            "Model response missing required annotation keys"
+        )
 
     return validate_annotation(
         parsed,
@@ -177,6 +290,23 @@ def run(limit=None, delay=0.2):
             },
         )
 
+        # Keep only annotations belonging to the currently
+        # configured annotators. Historical provider/model tests
+        # are preserved separately in provider_tests/.
+        annotations = record.get("annotations", {})
+
+        record["annotations"] = {
+            name: annotations[name]
+            for name in MODELS
+            if name in annotations
+        }
+
+        # Refresh source fields from the current filtering output.
+        record["title"] = book.get("title", "")
+        record["filtered_tags"] = book.get(
+            "final_valid_tags", []
+        )
+
         tags = book.get(
             "final_valid_tags", []
         )
@@ -187,10 +317,11 @@ def run(limit=None, delay=0.2):
                 f"{isbn} - no filtered tags"
             )
 
-            for name, model in MODELS.items():
+            for name, config in MODELS.items():
                 record["annotations"][name] = {
                     "status": "no_filtered_tags",
-                    "model": model,
+                    "provider": config["provider"],
+                    "model": config["model"],
                     "genre_paths": [],
                     "metadata_paths": [],
                 }
@@ -209,13 +340,17 @@ def run(limit=None, delay=0.2):
             f"{isbn} - {book.get('title', '')}"
         )
 
-        for name, model in MODELS.items():
+        for name, config in MODELS.items():
 
             old = record["annotations"].get(
                 name, {}
             )
 
-            if old.get("status") == "success":
+            if (
+                old.get("status") == "success"
+                and old.get("provider") == config["provider"]
+                and old.get("model") == config["model"]
+            ):
                 print(
                     f"  {name}: checkpoint ✓"
                 )
@@ -228,14 +363,15 @@ def run(limit=None, delay=0.2):
             try:
                 result = annotate_model(
                     book,
-                    model,
+                    config,
                     taxonomies,
                     candidates,
                 )
 
                 record["annotations"][name] = {
                     "status": "success",
-                    "model": model,
+                    "provider": config["provider"],
+                    "model": config["model"],
                     **result,
                 }
 
@@ -248,7 +384,8 @@ def run(limit=None, delay=0.2):
             except Exception as e:
                 record["annotations"][name] = {
                     "status": "error",
-                    "model": model,
+                    "provider": config["provider"],
+                    "model": config["model"],
                     "genre_paths": [],
                     "metadata_paths": [],
                     "error": str(e),

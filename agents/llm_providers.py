@@ -1,0 +1,401 @@
+import json
+import os
+import time
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+
+def _load_env():
+    env_path = Path(".env")
+
+    if not env_path.exists():
+        return
+
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+
+        key, value = line.split("=", 1)
+
+        os.environ.setdefault(
+            key.strip(),
+            value.strip(),
+        )
+
+
+def query_groq(
+    prompt,
+    model,
+    max_tokens=350,
+):
+    _load_env()
+
+    api_key = os.environ.get("GROQ_API_KEY", "").strip()
+
+    if not api_key:
+        raise RuntimeError("GROQ_API_KEY is not configured")
+
+    payload = {
+        "model": model,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        "temperature": 0,
+        "max_completion_tokens": max_tokens,
+    }
+
+    if model.startswith("openai/gpt-oss"):
+        payload["reasoning_effort"] = "low"
+
+    request = urllib.request.Request(
+        "https://api.groq.com/openai/v1/chat/completions",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "book-genre-research/1.0",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(
+            request,
+            timeout=120,
+        ) as response:
+            data = json.loads(
+                response.read().decode("utf-8")
+            )
+
+    except urllib.error.HTTPError as error:
+        body = error.read().decode(
+            "utf-8",
+            errors="replace",
+        )
+
+        raise RuntimeError(
+            f"Groq HTTP {error.code}: {body}"
+        ) from error
+
+    try:
+        content = data["choices"][0]["message"]["content"]
+
+        if not content or not content.strip():
+            finish_reason = data["choices"][0].get(
+                "finish_reason"
+            )
+
+            raise RuntimeError(
+                "Model returned empty final content "
+                f"(finish_reason={finish_reason})"
+            )
+
+        return content
+
+    except (KeyError, IndexError, TypeError) as error:
+        raise RuntimeError(
+            f"Unexpected Groq response: {data}"
+        ) from error
+
+
+
+def query_gemini(
+    prompt,
+    model,
+    max_tokens=500,
+    max_retries=4,
+):
+    _load_env()
+
+    api_key = os.environ.get("GEMINI_API_KEY")
+
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY is not configured")
+
+    url = (
+        "https://generativelanguage.googleapis.com/"
+        f"v1beta/models/{model}:generateContent"
+    )
+
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": prompt}],
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0,
+            "maxOutputTokens": max_tokens,
+            "responseMimeType": "application/json",
+        },
+    }
+
+    body = json.dumps(payload).encode("utf-8")
+
+    for attempt in range(max_retries + 1):
+        req = urllib.request.Request(
+            url,
+            data=body,
+            headers={
+                "x-goog-api-key": api_key,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+            method="POST",
+        )
+
+        try:
+            with urllib.request.urlopen(
+                req,
+                timeout=120,
+            ) as response:
+                data = json.loads(
+                    response.read().decode("utf-8")
+                )
+
+            candidates = data.get("candidates", [])
+
+            if not candidates:
+                raise RuntimeError(
+                    "Gemini returned no candidates"
+                )
+
+            candidate = candidates[0]
+
+            parts = (
+                candidate
+                .get("content", {})
+                .get("parts", [])
+            )
+
+            content = "".join(
+                part.get("text", "")
+                for part in parts
+                if isinstance(part, dict)
+            ).strip()
+
+            if not content:
+                finish_reason = candidate.get(
+                    "finishReason"
+                )
+
+                raise RuntimeError(
+                    "Gemini returned empty final content "
+                    f"(finish_reason={finish_reason})"
+                )
+
+            return content
+
+        except urllib.error.HTTPError as error:
+            error_body = error.read().decode(
+                "utf-8",
+                errors="replace",
+            )
+
+            if (
+                error.code in (429, 503)
+                and attempt < max_retries
+            ):
+                wait_seconds = 2 ** attempt
+
+                print(
+                    f"    Gemini HTTP {error.code}; "
+                    f"retrying in {wait_seconds}s..."
+                )
+
+                time.sleep(wait_seconds)
+                continue
+
+            raise RuntimeError(
+                f"Gemini HTTP {error.code}: "
+                f"{error_body[:1000]}"
+            ) from error
+
+    raise RuntimeError(
+        "Gemini retry loop ended unexpectedly"
+    )
+
+
+def query_openrouter(
+    prompt,
+    model,
+    max_tokens=500,
+):
+    _load_env()
+
+    api_key = os.environ.get(
+        "OPENROUTER_API_KEY",
+        "",
+    ).strip()
+
+    if not api_key:
+        raise RuntimeError(
+            "OPENROUTER_API_KEY is not configured"
+        )
+
+    payload = {
+        "model": model,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        "temperature": 0,
+        "max_tokens": max_tokens,
+    }
+
+    request = urllib.request.Request(
+        "https://openrouter.ai/api/v1/chat/completions",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "book-genre-research/1.0",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(
+            request,
+            timeout=180,
+        ) as response:
+            raw_body = response.read().decode(
+                "utf-8",
+                errors="replace",
+            )
+
+    except urllib.error.HTTPError as error:
+        body = error.read().decode(
+            "utf-8",
+            errors="replace",
+        )
+
+        raise RuntimeError(
+            f"OpenRouter HTTP {error.code}: "
+            f"{body[:1500]}"
+        ) from error
+
+    except urllib.error.URLError as error:
+        raise RuntimeError(
+            f"OpenRouter network error: {error}"
+        ) from error
+
+    try:
+        data = json.loads(raw_body)
+    except json.JSONDecodeError as error:
+        raise RuntimeError(
+            "OpenRouter returned non-JSON response: "
+            f"{raw_body[:1000]}"
+        ) from error
+
+    # OpenRouter may return HTTP 200 while the
+    # upstream provider reports an error.
+    if data.get("error"):
+        error = data["error"]
+
+        if isinstance(error, dict):
+            code = error.get("code")
+            message = error.get(
+                "message",
+                "Unknown provider error",
+            )
+
+            metadata = error.get("metadata") or {}
+
+            error_type = (
+                metadata.get("error_type")
+                or metadata.get(
+                    "provider_error_code"
+                )
+                or "unknown"
+            )
+
+            provider_name = metadata.get(
+                "provider_name",
+                data.get("provider", "unknown"),
+            )
+
+            raise RuntimeError(
+                "OpenRouter provider error "
+                f"(code={code}, "
+                f"type={error_type}, "
+                f"provider={provider_name}): "
+                f"{message}"
+            )
+
+        raise RuntimeError(
+            f"OpenRouter provider error: {error}"
+        )
+
+    choices = data.get("choices")
+
+    if not isinstance(choices, list) or not choices:
+        raise RuntimeError(
+            "OpenRouter response contained no choices"
+        )
+
+    choice = choices[0]
+
+    if not isinstance(choice, dict):
+        raise RuntimeError(
+            "OpenRouter returned invalid choice structure"
+        )
+
+    message = choice.get("message") or {}
+
+    content = message.get("content")
+
+    if not isinstance(content, str) or not content.strip():
+        finish_reason = choice.get(
+            "finish_reason"
+        )
+
+        raise RuntimeError(
+            "OpenRouter returned empty final content "
+            f"(finish_reason={finish_reason})"
+        )
+
+    return content.strip()
+
+
+def query_model(
+    prompt,
+    provider,
+    model,
+    max_tokens=350,
+):
+    if provider == "groq":
+        return query_groq(
+            prompt,
+            model,
+            max_tokens=max_tokens,
+        )
+
+    if provider == "openrouter":
+        return query_openrouter(
+            prompt,
+            model,
+            max_tokens=max_tokens,
+        )
+
+    if provider == "gemini":
+        return query_gemini(
+            prompt,
+            model,
+            max_tokens=max_tokens,
+        )
+
+    raise ValueError(
+        f"Unsupported provider: {provider}"
+    )
