@@ -53,6 +53,21 @@ def main():
             "agreement_type": conflict.get(
                 "agreement_type", ""
             ),
+            "shared_genre_paths": conflict.get(
+                "shared_genre_paths", []
+            ),
+            "shared_metadata_paths": conflict.get(
+                "shared_metadata_paths", []
+            ),
+            "disputed_genre_paths": conflict.get(
+                "disputed_genre_paths", []
+            ),
+            "disputed_metadata_paths": conflict.get(
+                "disputed_metadata_paths", []
+            ),
+            "model_only_paths": conflict.get(
+                "model_only_paths", {}
+            ),
             "original_annotations": successful,
         }
 
