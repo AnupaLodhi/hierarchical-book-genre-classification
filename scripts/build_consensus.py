@@ -19,6 +19,68 @@ def signature(annotation):
     )
 
 
+def path_analysis(successful):
+    if not successful:
+        return {
+            "shared_genre_paths": [],
+            "shared_metadata_paths": [],
+            "disputed_genre_paths": [],
+            "disputed_metadata_paths": [],
+            "model_only_paths": {},
+        }
+
+    genre_sets = {
+        model: set(annotation.get("genre_paths") or [])
+        for model, annotation in successful.items()
+    }
+
+    metadata_sets = {
+        model: set(annotation.get("metadata_paths") or [])
+        for model, annotation in successful.items()
+    }
+
+    shared_genres = set.intersection(*genre_sets.values())
+    shared_metadata = set.intersection(*metadata_sets.values())
+
+    union_genres = set.union(*genre_sets.values())
+    union_metadata = set.union(*metadata_sets.values())
+
+    disputed_genres = union_genres - shared_genres
+    disputed_metadata = union_metadata - shared_metadata
+
+    model_only = {}
+
+    for model in successful:
+        other_genres = set().union(*[
+            paths
+            for name, paths in genre_sets.items()
+            if name != model
+        ])
+
+        other_metadata = set().union(*[
+            paths
+            for name, paths in metadata_sets.items()
+            if name != model
+        ])
+
+        model_only[model] = {
+            "genre_paths": sorted(
+                genre_sets[model] - other_genres
+            ),
+            "metadata_paths": sorted(
+                metadata_sets[model] - other_metadata
+            ),
+        }
+
+    return {
+        "shared_genre_paths": sorted(shared_genres),
+        "shared_metadata_paths": sorted(shared_metadata),
+        "disputed_genre_paths": sorted(disputed_genres),
+        "disputed_metadata_paths": sorted(disputed_metadata),
+        "model_only_paths": model_only,
+    }
+
+
 def save_csv(path, rows):
     fields = [
         "isbn13",
@@ -28,6 +90,10 @@ def save_csv(path, rows):
         "agreement_type",
         "genre_paths",
         "metadata_paths",
+        "shared_genre_paths",
+        "shared_metadata_paths",
+        "disputed_genre_paths",
+        "disputed_metadata_paths",
     ]
 
     with path.open("w", newline="", encoding="utf-8") as f:
@@ -43,6 +109,18 @@ def save_csv(path, rows):
                 "agreement_type": r["agreement_type"],
                 "genre_paths": " | ".join(r.get("genre_paths", [])),
                 "metadata_paths": " | ".join(r.get("metadata_paths", [])),
+                "shared_genre_paths": " | ".join(
+                    r.get("shared_genre_paths", [])
+                ),
+                "shared_metadata_paths": " | ".join(
+                    r.get("shared_metadata_paths", [])
+                ),
+                "disputed_genre_paths": " | ".join(
+                    r.get("disputed_genre_paths", [])
+                ),
+                "disputed_metadata_paths": " | ".join(
+                    r.get("disputed_metadata_paths", [])
+                ),
             })
 
 
@@ -67,11 +145,14 @@ for book in data:
     n = len(successful)
     availability[n] += 1
 
+    analysis = path_analysis(successful)
+
     base = {
         "isbn13": book["isbn13"],
         "title": book.get("title", ""),
         "available_models": list(successful),
         "available_count": n,
+        **analysis,
     }
 
     # These books had no filtered evidence, so no paid annotation was needed.
