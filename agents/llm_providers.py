@@ -199,20 +199,11 @@ def query_gemini(
                 errors="replace",
             )
 
-            if (
-                error.code == 503
-                and attempt < max_retries
-            ):
-                wait_seconds = 2 ** attempt
-
-                print(
-                    f"    Gemini HTTP {error.code}; "
-                    f"retrying in {wait_seconds}s..."
-                )
-
-                time.sleep(wait_seconds)
-                continue
-
+            # Do not automatically retry Gemini HTTP 429/503.
+            # Free-tier quotas are small, and repeated retries can
+            # consume the request allowance without producing an
+            # annotation. A failed provider call remains an error
+            # and can be retried explicitly in a later run.
             raise RuntimeError(
                 f"Gemini HTTP {error.code}: "
                 f"{error_body[:1000]}"
