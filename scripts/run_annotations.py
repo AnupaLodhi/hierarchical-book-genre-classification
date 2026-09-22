@@ -237,7 +237,14 @@ def annotate_model(
         max_tokens=config.get("max_tokens", 350),
     )
 
-    parsed = parse_annotation_json_strict(raw)
+    try:
+        parsed = parse_annotation_json_strict(raw)
+    except RuntimeError as exc:
+        preview = raw.strip().replace("\\n", " ")[:1500]
+
+        raise RuntimeError(
+            f"{exc} | RAW_RESPONSE_PREVIEW: {preview}"
+        ) from exc
 
     if not isinstance(parsed, dict):
         raise RuntimeError(
