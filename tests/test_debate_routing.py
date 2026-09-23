@@ -52,7 +52,7 @@ def test_routing():
         "annotations": {
             "qwen_groq": ann("success", ["A"]),
             "gpt_oss_groq": ann("success", ["B"]),
-            "gemini_google": ann("error"),
+            "gpt_oss_20b": ann("error"),
         },
     }
 
@@ -73,7 +73,7 @@ def test_routing():
         "annotations": {
             "qwen_groq": ann("success", ["A"]),
             "gpt_oss_groq": ann("error"),
-            "gemini_google": ann("error"),
+            "gpt_oss_20b": ann("error"),
         },
     }
 
@@ -89,14 +89,14 @@ def test_routing():
     assert record["available_count"] == 1
     assert record["model_statuses"]["qwen_groq"] == "success"
     assert record["model_statuses"]["gpt_oss_groq"] == "error"
-    assert record["model_statuses"]["gemini_google"] == "error"
+    assert record["model_statuses"]["gpt_oss_20b"] == "error"
 
     zero_success = {
         "isbn13": "TEST-3",
         "annotations": {
             "qwen_groq": ann("error"),
             "gpt_oss_groq": ann("error"),
-            "gemini_google": ann("error"),
+            "gpt_oss_20b": ann("error"),
         },
     }
 

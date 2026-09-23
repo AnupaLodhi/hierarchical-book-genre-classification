@@ -28,9 +28,9 @@ MODELS = {
         "model": "openai/gpt-oss-120b",
         "max_tokens": 700,
     },
-    "gemini_google": {
-        "provider": "gemini",
-        "model": "gemini-3.8-flash",
+    "gpt_oss_20b": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
         "max_tokens": 1000,
     },
 }

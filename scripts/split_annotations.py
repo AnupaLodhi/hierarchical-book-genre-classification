@@ -4,7 +4,7 @@ from pathlib import Path
 INPUT = Path("results/annotations/multi_llm_annotations.json")
 OUTPUT_DIR = Path("results/annotations")
 
-MODELS = ("qwen_groq", "gpt_oss_groq", "gemini_google")
+MODELS = ("qwen_groq", "gpt_oss_groq", "gpt_oss_20b")
 
 
 def main():

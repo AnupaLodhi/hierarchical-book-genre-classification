@@ -10,7 +10,7 @@ CONFLICTS = Path(
 )
 OUT_DIR = Path("results/resolution")
 
-MODELS = ["qwen_groq", "gpt_oss_groq", "gemini_google"]
+MODELS = ["qwen_groq", "gpt_oss_groq", "gpt_oss_20b"]
 
 
 def main():

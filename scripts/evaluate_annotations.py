@@ -5,7 +5,7 @@ from pathlib import Path
 
 INPUT = Path("results/annotations/multi_llm_annotations.json")
 OUTPUT = Path("results/evaluation/evaluation_summary.json")
-MODELS = ["qwen_groq", "gpt_oss_groq", "gemini_google"]
+MODELS = ["qwen_groq", "gpt_oss_groq", "gpt_oss_20b"]
 
 data = json.loads(INPUT.read_text(encoding="utf-8"))
 
