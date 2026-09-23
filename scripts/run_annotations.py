@@ -277,6 +277,10 @@ def run(limit=None, delay=0.2):
     taxonomies = load_taxonomies()
     records = load_existing()
 
+    # Models that exhaust their daily token quota are paused only
+    # for the current execution. Existing checkpoints are preserved.
+    paused_models = set()
+
     total = len(books)
 
     for index, book in enumerate(
@@ -353,6 +357,12 @@ def run(limit=None, delay=0.2):
                 name, {}
             )
 
+            if name in paused_models:
+                print(
+                    f"  {name}: quota paused - skip"
+                )
+                continue
+
             if (
                 old.get("status") == "success"
                 and old.get("provider") == config["provider"]
@@ -389,18 +399,38 @@ def run(limit=None, delay=0.2):
                 )
 
             except Exception as e:
+                error_text = str(e)
+
                 record["annotations"][name] = {
                     "status": "error",
                     "provider": config["provider"],
                     "model": config["model"],
                     "genre_paths": [],
                     "metadata_paths": [],
-                    "error": str(e),
+                    "error": error_text,
                 }
 
                 print(
                     f"  {name}: ERROR {e}"
                 )
+
+                error_lower = error_text.lower()
+
+                is_daily_quota = (
+                    "429" in error_lower
+                    and (
+                        "tokens per day" in error_lower
+                        or "(tpd)" in error_lower
+                    )
+                )
+
+                if is_daily_quota:
+                    paused_models.add(name)
+
+                    print(
+                        f"  {name}: DAILY QUOTA EXHAUSTED "
+                        "- paused for this run"
+                    )
 
             records[isbn] = record
             save_checkpoint(records)
@@ -430,6 +460,43 @@ def run(limit=None, delay=0.2):
             f"{key[0]:8} "
             f"{key[1]:18} "
             f"{counts[key]}"
+        )
+
+    print("\n===== REMAINING WORK =====")
+
+    for name in MODELS:
+        success = 0
+        no_tags = 0
+        remaining = 0
+
+        for book in books:
+            isbn = str(book["isbn13"])
+            rec = records.get(isbn, {})
+            ann = rec.get(
+                "annotations", {}
+            ).get(name, {})
+
+            status = ann.get("status")
+
+            if status == "success":
+                success += 1
+            elif status == "no_filtered_tags":
+                no_tags += 1
+            else:
+                remaining += 1
+
+        state = (
+            "PAUSED"
+            if name in paused_models
+            else "ACTIVE"
+        )
+
+        print(
+            f"{name:16} "
+            f"success={success:<3} "
+            f"no_tags={no_tags:<3} "
+            f"remaining={remaining:<3} "
+            f"{state}"
         )
 
     print(
