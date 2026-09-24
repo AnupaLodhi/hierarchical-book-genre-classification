@@ -30,13 +30,19 @@ def query_groq(
     prompt,
     model,
     max_tokens=350,
+    max_retries=3,
 ):
     _load_env()
 
-    api_key = os.environ.get("GROQ_API_KEY", "").strip()
+    api_key = os.environ.get(
+        "GROQ_API_KEY",
+        "",
+    ).strip()
 
     if not api_key:
-        raise RuntimeError("GROQ_API_KEY is not configured")
+        raise RuntimeError(
+            "GROQ_API_KEY is not configured"
+        )
 
     payload = {
         "model": model,
@@ -53,36 +59,69 @@ def query_groq(
     if model.startswith("openai/gpt-oss"):
         payload["reasoning_effort"] = "low"
 
-    request = urllib.request.Request(
-        "https://api.groq.com/openai/v1/chat/completions",
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "book-genre-research/1.0",
-        },
-        method="POST",
-    )
+    body = json.dumps(payload).encode("utf-8")
 
-    try:
-        with urllib.request.urlopen(
-            request,
-            timeout=120,
-        ) as response:
-            data = json.loads(
-                response.read().decode("utf-8")
-            )
-
-    except urllib.error.HTTPError as error:
-        body = error.read().decode(
-            "utf-8",
-            errors="replace",
+    for attempt in range(max_retries + 1):
+        request = urllib.request.Request(
+            "https://api.groq.com/openai/v1/chat/completions",
+            data=body,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "User-Agent": "book-genre-research/1.0",
+            },
+            method="POST",
         )
 
+        try:
+            with urllib.request.urlopen(
+                request,
+                timeout=120,
+            ) as response:
+                data = json.loads(
+                    response.read().decode("utf-8")
+                )
+
+            break
+
+        except urllib.error.HTTPError as error:
+            error_body = error.read().decode(
+                "utf-8",
+                errors="replace",
+            )
+
+            # Do not retry HTTP errors here.
+            # Daily quota errors must propagate to the runner.
+            raise RuntimeError(
+                f"Groq HTTP {error.code}: {error_body}"
+            ) from error
+
+        except (
+            TimeoutError,
+            urllib.error.URLError,
+            ConnectionError,
+            ConnectionResetError,
+        ) as error:
+            if attempt < max_retries:
+                wait_seconds = 2 ** attempt
+
+                print(
+                    "    Groq connection error; "
+                    f"retrying in {wait_seconds}s..."
+                )
+
+                time.sleep(wait_seconds)
+                continue
+
+            raise RuntimeError(
+                f"Groq connection error after retries: {error}"
+            ) from error
+
+    else:
         raise RuntimeError(
-            f"Groq HTTP {error.code}: {body}"
-        ) from error
+            "Groq request failed after retries"
+        )
 
     try:
         content = data["choices"][0]["message"]["content"]
@@ -103,7 +142,6 @@ def query_groq(
         raise RuntimeError(
             f"Unexpected Groq response: {data}"
         ) from error
-
 
 
 def query_gemini(

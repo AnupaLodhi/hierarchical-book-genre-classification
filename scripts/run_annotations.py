@@ -266,7 +266,7 @@ def annotate_model(
     )
 
 
-def run(limit=None, delay=0.2):
+def run(limit=None, delay=0.2, coverage_only=False):
     books = json.loads(
         INPUT.read_text(encoding="utf-8")
     )
@@ -341,6 +341,21 @@ def run(limit=None, delay=0.2):
             save_checkpoint(records)
             continue
 
+        if coverage_only:
+            successful_models = [
+                name
+                for name, ann in record["annotations"].items()
+                if ann.get("status") == "success"
+            ]
+
+            if successful_models:
+                records[isbn] = record
+                print(
+                    f"[{index}/{total}] {isbn} - "
+                    f"coverage already satisfied - skip"
+                )
+                continue
+
         candidates = retrieve_candidate_paths(
             tags,
             taxonomies,
@@ -397,6 +412,15 @@ def run(limit=None, delay=0.2):
                     f"(G={len(result['genre_paths'])}, "
                     f"M={len(result['metadata_paths'])})"
                 )
+
+                if coverage_only:
+                    records[isbn] = record
+                    save_checkpoint(records)
+
+                    if delay:
+                        time.sleep(delay)
+
+                    break
 
             except Exception as e:
                 error_text = str(e)
@@ -524,9 +548,19 @@ if __name__ == "__main__":
         default=0.2,
     )
 
+    parser.add_argument(
+        "--coverage-only",
+        action="store_true",
+        help=(
+            "Only annotate books with zero successful models "
+            "and stop after the first successful annotation."
+        ),
+    )
+
     args = parser.parse_args()
 
     run(
         limit=args.limit,
         delay=args.delay,
+        coverage_only=args.coverage_only,
     )
