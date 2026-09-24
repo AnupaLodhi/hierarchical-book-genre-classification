@@ -91,8 +91,46 @@ def query_groq(
                 errors="replace",
             )
 
-            # Do not retry HTTP errors here.
-            # Daily quota errors must propagate to the runner.
+            error_lower = error_body.lower()
+
+            is_daily_quota = (
+                error.code == 429
+                and (
+                    "tokens per day" in error_lower
+                    or "tpd" in error_lower
+                )
+            )
+
+            is_transient_rate_limit = (
+                error.code == 429
+                and not is_daily_quota
+            )
+
+            if is_transient_rate_limit and attempt < max_retries:
+                retry_after = error.headers.get(
+                    "Retry-After"
+                )
+
+                try:
+                    wait_seconds = float(retry_after)
+                except (TypeError, ValueError):
+                    wait_seconds = 2 ** attempt
+
+                wait_seconds = max(
+                    wait_seconds,
+                    1.0,
+                )
+
+                print(
+                    "    Groq rate limit; "
+                    f"retrying in {wait_seconds:.1f}s..."
+                )
+
+                time.sleep(wait_seconds)
+                continue
+
+            # Daily quota and other HTTP errors propagate
+            # to the annotation runner.
             raise RuntimeError(
                 f"Groq HTTP {error.code}: {error_body}"
             ) from error
