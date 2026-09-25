@@ -3,273 +3,422 @@ import json
 from pathlib import Path
 from collections import Counter
 
-CONSENSUS = Path("results/consensus")
-RESOLUTION = Path("results/resolution")
-FINAL = Path("results/final")
-FINAL.mkdir(parents=True, exist_ok=True)
+CONSENSUS = Path(
+    "results/consensus/provisional_consensus_interim.json"
+)
+ADJ = Path(
+    "results/adjudication/adjudication_v1.0.csv"
+)
+OUT = Path("results/final")
+OUT.mkdir(parents=True, exist_ok=True)
 
-perfect = json.load(open(CONSENSUS / "perfect_consensus.json"))
-partial = json.load(open(CONSENSUS / "partial_agreement.json"))
-debate_inputs = json.load(open(RESOLUTION / "debate_inputs.json"))
-debate_results = json.load(open(RESOLUTION / "debate_resolutions.json"))
-incomplete = json.load(open(RESOLUTION / "incomplete_annotations.json"))
-no_evidence = json.load(open(CONSENSUS / "no_evidence.json"))
-
-debate_input_by_isbn = {x["isbn13"]: x for x in debate_inputs}
-debate_result_by_isbn = {x["isbn13"]: x for x in debate_results}
-
-final = []
-manual = []
+FINAL = OUT / "canonical_labels_v1.0.csv"
+PROV = OUT / "label_provenance_v1.0.csv"
+UNRESOLVED = OUT / "unresolved_cases_v1.0.csv"
+SUMMARY = OUT / "dataset_summary_v1.0.txt"
 
 
-def resolved_record(x, method):
-    return {
-        "isbn13": x["isbn13"],
-        "title": x.get("title", ""),
-        "resolution_method": method,
-        "genre_paths": x.get("genre_paths", []),
-        "metadata_paths": x.get("metadata_paths", []),
-    }
-
-
-# 1. Perfect 3/3 consensus
-for x in perfect:
-    final.append(
-        resolved_record(x, "perfect_3_of_3_consensus")
+def split_path(path):
+    return tuple(
+        x.strip()
+        for x in path.split(" / ")
+        if x.strip()
     )
 
 
-# 2. Partial multi-model agreement
-for x in partial:
-    final.append(
-        resolved_record(
-            x,
-            x.get("agreement_type", "partial_agreement")
+def is_strict_ancestor(a, d):
+    a = split_path(a)
+    d = split_path(d)
+    return len(a) < len(d) and d[:len(a)] == a
+
+
+def remove_redundant_ancestors(paths):
+    paths = set(paths)
+
+    return sorted(
+        p for p in paths
+        if not any(
+            p != q and is_strict_ancestor(p, q)
+            for q in paths
         )
     )
 
 
-# 3. Debate cases
-for isbn, inp in debate_input_by_isbn.items():
-    result = debate_result_by_isbn.get(isbn)
+# --------------------------------------------------
+# Load frozen inputs
+# --------------------------------------------------
 
-    if result is None:
-        manual.append({
-            "isbn13": isbn,
-            "title": inp.get("title", ""),
-            "review_reason": "debate_not_run",
-            "available_original_models": inp.get("available_count", 0),
-            "filtered_tags": inp.get("filtered_tags", []),
-            "original_annotations": inp.get("original_annotations", {}),
-            "resolver_error": "",
-        })
-        continue
+records = json.loads(
+    CONSENSUS.read_text(encoding="utf-8")
+)
 
-    if result.get("status") != "success":
-        manual.append({
-            "isbn13": isbn,
-            "title": inp.get("title", ""),
-            "review_reason": "debate_api_error",
-            "available_original_models": inp.get("available_count", 0),
-            "filtered_tags": inp.get("filtered_tags", []),
-            "original_annotations": inp.get("original_annotations", {}),
-            "resolver_error": result.get("error", ""),
-        })
-        continue
-
-    genres = result.get("genre_paths", [])
-    metadata = result.get("metadata_paths", [])
-
-    if not genres and not metadata:
-        manual.append({
-            "isbn13": isbn,
-            "title": inp.get("title", ""),
-            "review_reason": "resolver_returned_empty",
-            "available_original_models": inp.get("available_count", 0),
-            "filtered_tags": inp.get("filtered_tags", []),
-            "original_annotations": inp.get("original_annotations", {}),
-            "resolver_error": "",
-        })
-        continue
-
-    final.append({
-        "isbn13": isbn,
-        "title": inp.get("title", ""),
-        "resolution_method": "debate_resolver",
-        "resolver_provider": result.get("provider", ""),
-        "resolver_model": result.get("model", ""),
-        "genre_paths": genres,
-        "metadata_paths": metadata,
-    })
+with ADJ.open(encoding="utf-8") as f:
+    adjudications = list(csv.DictReader(f))
 
 
-# 4. Incomplete original annotations
-for x in incomplete:
-    manual.append({
-        "isbn13": x["isbn13"],
-        "title": x.get("title", ""),
-        "review_reason": "insufficient_original_annotations",
-        "available_original_models": x.get("available_count", 0),
-        "filtered_tags": [],
-        "original_annotations": {},
-        "resolver_error": "",
-    })
-
-
-# 5. No filtered evidence
-for x in no_evidence:
-    manual.append({
-        "isbn13": x["isbn13"],
-        "title": x.get("title", ""),
-        "review_reason": "no_filtered_tags",
-        "available_original_models": 0,
-        "filtered_tags": [],
-        "original_annotations": {},
-        "resolver_error": "",
-    })
-
-
-# Safety checks
-all_isbns = [x["isbn13"] for x in final] + [
-    x["isbn13"] for x in manual
-]
-
-expected_isbns = set()
-
-for group in (
-    perfect,
-    partial,
-    debate_inputs,
-    incomplete,
-    no_evidence,
-):
-    expected_isbns.update(
-        str(x["isbn13"])
-        for x in group
+if len(adjudications) != 186:
+    raise SystemExit(
+        f"ERROR: expected 186 adjudication rows, "
+        f"found {len(adjudications)}"
     )
 
-assert set(map(str, all_isbns)) == expected_isbns, (
-    "Final/manual outputs do not exactly match "
-    "the experiment input ISBNs"
-)
 
-assert len(all_isbns) == len(set(map(str, all_isbns))), (
-    "Duplicate ISBN detected between final/manual outputs"
-)
+valid_decisions = {"ACCEPT", "REJECT", "UNSURE"}
 
-
-# Save JSON
-(FINAL / "final_output.json").write_text(
-    json.dumps(final, indent=2, ensure_ascii=False),
-    encoding="utf-8",
-)
-
-(FINAL / "manual_review.json").write_text(
-    json.dumps(manual, indent=2, ensure_ascii=False),
-    encoding="utf-8",
-)
+for r in adjudications:
+    if r["decision"] not in valid_decisions:
+        raise SystemExit(
+            f"ERROR: invalid decision in {r['case_id']}: "
+            f"{r['decision']}"
+        )
 
 
-# Save final CSV
-with open(
-    FINAL / "final_output.csv",
-    "w",
-    newline="",
-    encoding="utf-8"
+# --------------------------------------------------
+# Index adjudications
+# --------------------------------------------------
+
+adj_by_book_field = {}
+
+for r in adjudications:
+    key = (
+        str(r["isbn13"]),
+        r["field"].strip().lower(),
+    )
+    adj_by_book_field.setdefault(key, []).append(r)
+
+
+# --------------------------------------------------
+# Construct final labels
+# --------------------------------------------------
+
+final_rows = []
+provenance_rows = []
+unresolved_rows = []
+
+stats = Counter()
+
+for rec in records:
+
+    isbn = str(rec["isbn13"])
+    title = rec.get("title", "")
+
+    row = {
+        "isbn13": isbn,
+        "title": title,
+    }
+
+    for field in ("genre", "metadata"):
+
+        automatic = set(
+            rec["consensus"][field]
+            .get("canonical_paths", [])
+        )
+
+        accepted_adj = set()
+
+        for a in adj_by_book_field.get(
+            (isbn, field), []
+        ):
+
+            decision = a["decision"]
+            candidate = a["candidate_path"]
+
+            if decision == "ACCEPT":
+                accepted_adj.add(candidate)
+
+            elif decision == "UNSURE":
+                unresolved_rows.append({
+                    "case_id": a["case_id"],
+                    "isbn13": isbn,
+                    "title": title,
+                    "field": field,
+                    "candidate_path": candidate,
+                    "confidence": a["confidence"],
+                    "rationale": a["rationale"],
+                })
+
+            # REJECT deliberately contributes no label.
+
+        before_pruning = automatic | accepted_adj
+
+        final_paths = remove_redundant_ancestors(
+            before_pruning
+        )
+
+        row[f"{field}_paths"] = " | ".join(
+            final_paths
+        )
+
+        row[f"{field}_label_count"] = len(
+            final_paths
+        )
+
+        stats[f"{field}_automatic_paths"] += len(
+            automatic
+        )
+        stats[f"{field}_accepted_adjudication_paths"] += len(
+            accepted_adj
+        )
+        stats[f"{field}_final_paths"] += len(
+            final_paths
+        )
+
+        if not final_paths:
+            stats[f"{field}_empty_books"] += 1
+
+        # Provenance only for labels surviving final pruning.
+        for path in final_paths:
+
+            exact_auto = path in automatic
+            exact_adj = path in accepted_adj
+
+            if exact_auto and exact_adj:
+                source = (
+                    "automatic_consensus+"
+                    "accepted_adjudication"
+                )
+            elif exact_auto:
+                source = "automatic_consensus"
+            elif exact_adj:
+                source = "accepted_adjudication"
+            else:
+                # Should be impossible because pruning only
+                # removes paths; it never creates paths.
+                raise SystemExit(
+                    "ERROR: final path has no provenance: "
+                    f"{isbn} | {field} | {path}"
+                )
+
+            provenance_rows.append({
+                "isbn13": isbn,
+                "title": title,
+                "field": field,
+                "path": path,
+                "source": source,
+            })
+
+    final_rows.append(row)
+
+
+# --------------------------------------------------
+# Integrity checks
+# --------------------------------------------------
+
+if len(final_rows) != len(records):
+    raise SystemExit(
+        "ERROR: final row count differs from consensus"
+    )
+
+if len({
+    r["isbn13"] for r in final_rows
+}) != len(final_rows):
+    raise SystemExit(
+        "ERROR: duplicate ISBNs in final dataset"
+    )
+
+if len(unresolved_rows) != 3:
+    raise SystemExit(
+        f"ERROR: expected 3 unresolved cases, "
+        f"found {len(unresolved_rows)}"
+    )
+
+
+# Every ACCEPT adjudication must either:
+#   1. survive as a final path, or
+#   2. be a redundant ancestor of a surviving path.
+final_index = {}
+
+for r in final_rows:
+    final_index[
+        (r["isbn13"], "genre")
+    ] = set(
+        x.strip()
+        for x in r["genre_paths"].split(" | ")
+        if x.strip()
+    )
+
+    final_index[
+        (r["isbn13"], "metadata")
+    ] = set(
+        x.strip()
+        for x in r["metadata_paths"].split(" | ")
+        if x.strip()
+    )
+
+
+for a in adjudications:
+
+    if a["decision"] != "ACCEPT":
+        continue
+
+    key = (
+        str(a["isbn13"]),
+        a["field"].strip().lower(),
+    )
+
+    candidate = a["candidate_path"]
+    surviving = final_index[key]
+
+    represented = (
+        candidate in surviving
+        or any(
+            is_strict_ancestor(
+                candidate,
+                path,
+            )
+            for path in surviving
+        )
+    )
+
+    if not represented:
+        raise SystemExit(
+            "ERROR: accepted adjudication disappeared "
+            "without hierarchical representation:\n"
+            f"{a['case_id']} | {candidate}"
+        )
+
+
+# --------------------------------------------------
+# Write final dataset
+# --------------------------------------------------
+
+with FINAL.open(
+    "w", encoding="utf-8", newline=""
 ) as f:
+
     fields = [
         "isbn13",
         "title",
-        "resolution_method",
-        "resolver_provider",
-        "resolver_model",
         "genre_paths",
+        "genre_label_count",
         "metadata_paths",
+        "metadata_label_count",
     ]
 
-    writer = csv.DictWriter(f, fieldnames=fields)
-    writer.writeheader()
+    w = csv.DictWriter(
+        f,
+        fieldnames=fields,
+    )
 
-    for x in final:
-        writer.writerow({
-            "isbn13": x["isbn13"],
-            "title": x["title"],
-            "resolution_method": x["resolution_method"],
-            "resolver_provider": x.get("resolver_provider", ""),
-            "resolver_model": x.get("resolver_model", ""),
-            "genre_paths": " | ".join(x["genre_paths"]),
-            "metadata_paths": " | ".join(x["metadata_paths"]),
-        })
+    w.writeheader()
+    w.writerows(final_rows)
 
 
-# Save manual-review CSV
-with open(
-    FINAL / "manual_review.csv",
-    "w",
-    newline="",
-    encoding="utf-8"
+with PROV.open(
+    "w", encoding="utf-8", newline=""
 ) as f:
+
     fields = [
         "isbn13",
         "title",
-        "review_reason",
-        "available_original_models",
-        "filtered_tags",
-        "original_annotations",
-        "resolver_error",
+        "field",
+        "path",
+        "source",
     ]
 
-    writer = csv.DictWriter(f, fieldnames=fields)
-    writer.writeheader()
+    w = csv.DictWriter(
+        f,
+        fieldnames=fields,
+    )
 
-    for x in manual:
-        writer.writerow({
-            "isbn13": x["isbn13"],
-            "title": x["title"],
-            "review_reason": x["review_reason"],
-            "available_original_models":
-                x["available_original_models"],
-            "filtered_tags":
-                " | ".join(x["filtered_tags"]),
-            "original_annotations":
-                json.dumps(
-                    x["original_annotations"],
-                    ensure_ascii=False,
-                ),
-            "resolver_error":
-                x["resolver_error"],
-        })
+    w.writeheader()
+    w.writerows(provenance_rows)
 
 
-methods = Counter(
-    x["resolution_method"]
-    for x in final
+with UNRESOLVED.open(
+    "w", encoding="utf-8", newline=""
+) as f:
+
+    fields = [
+        "case_id",
+        "isbn13",
+        "title",
+        "field",
+        "candidate_path",
+        "confidence",
+        "rationale",
+    ]
+
+    w = csv.DictWriter(
+        f,
+        fieldnames=fields,
+    )
+
+    w.writeheader()
+    w.writerows(unresolved_rows)
+
+
+# --------------------------------------------------
+# Summary
+# --------------------------------------------------
+
+decision_counts = Counter(
+    r["decision"]
+    for r in adjudications
 )
 
-reasons = Counter(
-    x["review_reason"]
-    for x in manual
+books_with_genre = sum(
+    bool(r["genre_paths"])
+    for r in final_rows
 )
 
-print("\n===== FINAL DATASET SUMMARY =====")
-print("Resolved:", len(final))
-print("Manual review:", len(manual))
-print("Total:", len(final) + len(manual))
+books_with_metadata = sum(
+    bool(r["metadata_paths"])
+    for r in final_rows
+)
 
-print("\nRESOLUTION METHODS")
-for k, v in sorted(methods.items()):
-    print(f"{k:35} {v}")
+books_with_both = sum(
+    bool(r["genre_paths"])
+    and bool(r["metadata_paths"])
+    for r in final_rows
+)
 
-print("\nMANUAL REVIEW REASONS")
-for k, v in sorted(reasons.items()):
-    print(f"{k:35} {v}")
+summary = f"""===== SILVER LABEL DATASET v1.0 =====
 
-print("\nUnique ISBNs:", len(set(all_isbns)))
+Books processed: {len(final_rows)}
 
-print("\nFILES")
-print("results/final/final_output.csv")
-print("results/final/final_output.json")
-print("results/final/manual_review.csv")
-print("results/final/manual_review.json")
+ADJUDICATION
+Accept: {decision_counts['ACCEPT']}
+Reject: {decision_counts['REJECT']}
+Unsure: {decision_counts['UNSURE']}
 
-print("\n✅ FINAL DATASET BUILD PASSED")
+GENRE
+Automatic canonical paths: {stats['genre_automatic_paths']}
+Accepted adjudication paths: {stats['genre_accepted_adjudication_paths']}
+Final canonical paths: {stats['genre_final_paths']}
+Books with genre labels: {books_with_genre}
+Books without genre labels: {stats['genre_empty_books']}
+
+METADATA
+Automatic canonical paths: {stats['metadata_automatic_paths']}
+Accepted adjudication paths: {stats['metadata_accepted_adjudication_paths']}
+Final canonical paths: {stats['metadata_final_paths']}
+Books with metadata labels: {books_with_metadata}
+Books without metadata labels: {stats['metadata_empty_books']}
+
+COVERAGE
+Books with both genre and metadata: {books_with_both}
+
+UNRESOLVED
+Unresolved adjudication paths: {len(unresolved_rows)}
+
+INTEGRITY
+Unique ISBNs: {len(set(r['isbn13'] for r in final_rows))}
+Duplicate ISBNs: 0
+Accepted-path representation check: PASS
+Unresolved-count check: PASS
+FINAL BUILD: PASS
+"""
+
+SUMMARY.write_text(
+    summary,
+    encoding="utf-8",
+)
+
+print(summary)
+
+print("Saved:")
+print(" ", FINAL)
+print(" ", PROV)
+print(" ", UNRESOLVED)
+print(" ", SUMMARY)
