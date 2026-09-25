@@ -306,23 +306,38 @@ def analyze_field(record, field):
         if count != 1:
             continue
 
-        represented = any(
-            path == accepted
-            or is_strict_ancestor(
+        exact_canonical = (
+            path in canonical
+        )
+
+        redundant_ancestor = any(
+            is_strict_ancestor(
                 path,
                 accepted,
             )
-            or is_strict_ancestor(
+            for accepted in canonical
+        )
+
+        extra_specificity = any(
+            is_strict_ancestor(
                 accepted,
                 path,
             )
             for accepted in canonical
         )
 
-        if represented:
+        if exact_canonical:
             reason = (
-                "singleton_hierarchically_"
-                "related_to_consensus"
+                "singleton_hierarchy_supported_"
+                "canonical"
+            )
+        elif redundant_ancestor:
+            reason = (
+                "singleton_redundant_ancestor"
+            )
+        elif extra_specificity:
+            reason = (
+                "singleton_extra_specificity"
             )
         else:
             reason = "isolated_singleton"
@@ -449,29 +464,33 @@ def main():
                     f"{short}_books_with_review"
                 ] += 1
 
-            isolated_items = [
+            adjudication_items = [
                 item
                 for item in result["review"]
-                if item["reason"]
-                == "isolated_singleton"
+                if item["reason"] in {
+                    "isolated_singleton",
+                    "singleton_extra_specificity",
+                }
             ]
 
             resolved_items = [
                 item
                 for item in result["review"]
-                if item["reason"]
-                == (
-                    "singleton_hierarchically_"
-                    "related_to_consensus"
-                )
+                if item["reason"] in {
+                    "singleton_redundant_ancestor",
+                    (
+                        "singleton_hierarchy_supported_"
+                        "canonical"
+                    ),
+                }
             ]
 
-            if isolated_items:
+            if adjudication_items:
                 stats[
                     f"{short}_adjudication_books"
                 ] += 1
 
-            for item in isolated_items:
+            for item in adjudication_items:
 
                 stats[
                     f"{short}_adjudication_paths"
@@ -492,7 +511,7 @@ def main():
                     "proposed_by":
                         item["model"],
                     "reason":
-                        "isolated_singleton",
+                        item["reason"],
                     "filtered_tags":
                         " | ".join(
                             record.get(
@@ -528,7 +547,7 @@ def main():
                     "proposed_by":
                         item["model"],
                     "resolution":
-                        "hierarchically_represented",
+                        item["reason"],
                     "canonical_paths":
                         " | ".join(
                             result["canonical"]
