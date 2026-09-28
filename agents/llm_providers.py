@@ -2,9 +2,9 @@ import json
 import os
 import time
 import urllib.error
+import re
 import urllib.request
 from pathlib import Path
-
 
 def _load_env():
     env_path = Path(".env")
@@ -106,18 +106,45 @@ def query_groq(
                 and not is_daily_quota
             )
 
-            if is_transient_rate_limit and attempt < max_retries:
-                retry_after = error.headers.get(
-                    "Retry-After"
-                )
+            if error.code == 429 and attempt < max_retries:
+                wait_seconds = None
 
-                try:
-                    wait_seconds = float(retry_after)
-                except (TypeError, ValueError):
-                    wait_seconds = 2 ** attempt
+                if is_daily_quota:
+                    match = re.search(
+                        r"try again in\\s*"
+                        r"([0-9.]+)"
+                        r"(ms|s|m|h)",
+                        error_body,
+                        flags=re.IGNORECASE,
+                    )
+
+                    if match:
+                        value = float(match.group(1))
+                        unit = match.group(2).lower()
+
+                        multipliers = {
+                            "ms": 0.001,
+                            "s": 1.0,
+                            "m": 60.0,
+                            "h": 3600.0,
+                        }
+
+                        wait_seconds = (
+                            value * multipliers[unit]
+                        )
+
+                if wait_seconds is None:
+                    retry_after = error.headers.get(
+                        "Retry-After"
+                    )
+
+                    try:
+                        wait_seconds = float(retry_after)
+                    except (TypeError, ValueError):
+                        wait_seconds = 2 ** attempt
 
                 wait_seconds = max(
-                    wait_seconds,
+                    wait_seconds + 2.0,
                     1.0,
                 )
 
@@ -129,7 +156,7 @@ def query_groq(
                 time.sleep(wait_seconds)
                 continue
 
-            # Daily quota and other HTTP errors propagate
+            # Exhausted retries and other HTTP errors propagate
             # to the annotation runner.
             raise RuntimeError(
                 f"Groq HTTP {error.code}: {error_body}"
